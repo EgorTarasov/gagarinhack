@@ -40,8 +40,9 @@ def parse_ithub_news():
                 text = soup.find("article", id="body_news")
                 text = markdownify(text.text)
                 news_index = int(news['href'].split('/')[-1])
-                print(news_index, date, title, image_link)
+                # print(news_index, date, title, image_link)
                 data = NewsDao(
+                    id=news_index,
                     title=str(title),
                     created_at=date,
                     description=str(text),
@@ -53,7 +54,7 @@ def parse_ithub_news():
     return res
 
 
-russian_months = ["янв", "фев", "март", "апр", "май", "июнь", "июль", "авг", "сен", "окт", "ноя", "дек"]
+russian_months = ["янв", "фев", "мар", "апр", "ма", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"]
 
 
 def parse_date(date: str, year: int) -> datetime:
@@ -62,6 +63,9 @@ def parse_date(date: str, year: int) -> datetime:
     for ind, russian_month in enumerate(russian_months, start=1):
         if month.lower().startswith(russian_month):
             date = date.replace(month=ind, year=year)
+            break
+    else:
+        print(day, month)
     return date
 
 
