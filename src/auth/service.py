@@ -45,6 +45,10 @@ async def register(db_conn: PoolConnectionProxy, user: schema.UserCreate) -> str
     return JWTEncoder.create_access_token(new_id)
 
 
+async def auth_vk(db_conn: PoolConnectionProxy) -> str:
+    ...
+
+
 async def send_password_code(db_conn: PoolConnectionProxy, redis, email: str) -> None:
     user = await crud.get_by_email(db_conn, email)
     if user is None:

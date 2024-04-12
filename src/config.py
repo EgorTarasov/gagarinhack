@@ -62,3 +62,4 @@ class Config(BaseSettings):
 
 
 cfg = Config()  # type: ignore
+print(cfg.build_postgres_dsn)

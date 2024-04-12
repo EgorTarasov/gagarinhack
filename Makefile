@@ -55,13 +55,3 @@ migration-down:
 	goose -dir "$(MIGRATION_FOLDER)" postgres "$(POSTGRES_SETUP_TEST)" down
 
 
-# запуск на сервере, с докером
-move:
-
-
-
-deploy:
-	ssh -i $(SERVER_USERNAME):$(SERVER_PASSWORD)@$(SERVER_URL) "cd gagarinhach && git pull && "
-
-stop_deploy:
-	ssh -i $(SERVER_USERNAME)@$(SERVER_URL) "cd gagarinhach && docker compose -f deployment/docker-compose.yaml down"
