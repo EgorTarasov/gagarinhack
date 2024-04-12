@@ -26,6 +26,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
     ports:
       - "25000:5432"
+    command: -p 25000
 
 
   rabbitmq:
@@ -66,3 +67,4 @@ services:
   #    interval: 30s
   #    timeout: 20s
   #    retries: 3
+
