@@ -1,13 +1,14 @@
 import logging
 from typing import AsyncGenerator
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
 
 from config import cfg
-from data import db, get_connection
+from data import db
 from worker import celery_client
 from auth.router import router as auth_router
+from timetable.router import router as timetable_router
 
 
 @asynccontextmanager
@@ -30,6 +31,7 @@ def create_app() -> FastAPI:
     logging.basicConfig(level=logging.DEBUG)
 
     new_app.include_router(auth_router)
+    new_app.include_router(timetable_router)
     return new_app
 
 

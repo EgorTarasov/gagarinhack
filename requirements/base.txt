@@ -16,3 +16,6 @@ redis[hiredis]
 pyTelegramBotAPI==4.17.0
 grpcio-tools==1.62.1
 minio==7.2.5
+bs4==0.0.2
+pandas==2.2.2
+openpyxl==3.1.2

@@ -1,6 +1,4 @@
 from asyncpg.pool import PoolConnectionProxy
-from redis import Redis
-
 from worker import send_email_recovery_code, send_telegram_notification
 from utils.password import PasswordManager
 from utils.jwt import JWTEncoder
