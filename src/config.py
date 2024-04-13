@@ -13,6 +13,8 @@ class Config(BaseSettings):
     debug: bool = False
     logging_level: str = "info"
 
+    search_engine_uri: str = "localhost:10000"
+
     max_upload_size: int = 5 * 1024 * 1024  # 5MB
 
     postgres_host: str
@@ -45,10 +47,21 @@ class Config(BaseSettings):
     s3_endpoint: str = "localhost:9000"
     aws_access_key_id: str
     aws_secret_access_key: str
+    s3_bucket: str = "static"
 
     # lms settings
     lms_base_url: str
     lms_timetable_path: str
+    yandex_maps_key: str
+
+    # vk
+    vk_client_id: str
+    vk_secure_token: str
+    vk_service_token: str
+    vk_redirect_uri: str = "http://localhost:5173/login"
+
+    vk_token_url: str = "https://oauth.vk.com/access_token?client_id={client_id}&client_secret={vk_secure_token}&redirect_uri={redirect_uri}&code={code}"
+    vk_base_url: str = "https://api.vk.ru/method"
 
     @property
     def build_postgres_dsn(self) -> str:
