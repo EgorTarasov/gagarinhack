@@ -1,7 +1,15 @@
 import datetime
+from enum import StrEnum
 
 from fastapi import UploadFile
 from pydantic import BaseModel, Field, ConfigDict
+
+
+class AchievementTypeDto(StrEnum):
+    EDUCATION = "Обучение"
+    CREATIVITY = "Творчество"
+    SOCIAL = "Общ. деятельность"
+    SPORT = "Спорт"
 
 
 class AchievementCreate(BaseModel):
@@ -10,6 +18,7 @@ class AchievementCreate(BaseModel):
     date: datetime.date = Field(datetime.datetime.today().date())
     place: str = Field("Moscow")
     description: str = Field("...")
+    type: AchievementTypeDto = AchievementTypeDto.CREATIVITY
     event_link: str = Field("https://ithub.ru/")
 
 
