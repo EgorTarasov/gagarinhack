@@ -10,6 +10,10 @@ class UserNotFoundException(AuthException):
     """Exception raised when the user is not found."""
 
 
+class UserExists(AuthException):
+    """Exception raised when the user exists."""
+
+
 class AccountLockedException(AuthException):
     """Exception raised when the user's account is locked."""
 

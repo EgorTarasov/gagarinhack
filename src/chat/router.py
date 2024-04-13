@@ -13,6 +13,7 @@ router = APIRouter(prefix="/chat", tags=["chat"])
 
 @router.get("/")
 async def get():
+    """Стартовое сообщение диалога"""
     with open("./templates/chat.html") as file:
         html = file.read()
     return HTMLResponse(html)
