@@ -1,0 +1,7 @@
+black==24.3.0
+pytest==8.1.1
+asyncpg-stubs==0.29.1
+mypy==1.9.0
+types-redis
+
+-r base.txt
