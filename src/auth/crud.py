@@ -27,6 +27,15 @@ async def get_by_email(db: PoolConnectionProxy, email: str) -> UserDao | None:
     return UserDao(**row)
 
 
+async def get_by_id(db: PoolConnectionProxy, user_id: int) -> UserDao | None:
+    """Получение пользователя по email"""
+    query = 'SELECT id, email, first_name, last_name, created_at, updated_at FROM "users" WHERE id = $1'
+    row = await db.fetchrow(query, user_id)
+    if row is None:
+        return None
+    return UserDao(**row)
+
+
 async def create_user(db: PoolConnectionProxy, user: schema.UserCreate) -> int | None:
     """Создание пользователя"""
     query = 'INSERT INTO "users" (email, pswd, first_name, last_name) VALUES ($1, $2, $3, $4) RETURNING id'

@@ -23,8 +23,8 @@ async def upload_achievement(
         minio_client: minio.Minio = Depends(get_minio)
 ):
     static_name = f"{uuid.uuid4()}.{file.filename.split('.')[-1]}"
-    minio_file = minio_client.put_object(bucket_name=cfg.s3_bucket, object_name=static_name,
-                                         data=file.file, length=file.size)
+    minio_client.put_object(bucket_name=cfg.s3_bucket, object_name=static_name,
+                            data=file.file, length=file.size)
     achievement_id = await service.upload_achievement(db, achievement, static_name)
     return achievement_id
 
@@ -45,8 +45,7 @@ async def download_achievement(
 ):
     obj = minio_client.get_object(cfg.s3_bucket, file_link)
     return StreamingResponse(
-            obj,
-            media_type='application/octet-stream',
-            headers={'Content-Disposition': f'attachment; filename="{file_link}"'}
-        )
-
+        obj,
+        media_type='application/octet-stream',
+        headers={'Content-Disposition': f'attachment; filename="{file_link}"'}
+    )

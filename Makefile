@@ -43,6 +43,10 @@ worker: rabbitmq
 fastapi:
 	python3 -m uvicorn --app-dir ./src/ main:app --reload
 
+.PHONY: tg-bot
+tg-bot:
+	python3 src/telegram/bot.py
+
 .PHONY: migration-create
 migration-create:
 	goose -dir "$(MIGRATION_FOLDER)" create "$(name)" sql

@@ -1,7 +1,7 @@
 from celery import Celery
 from config import Config
 from utils.email import EmailClient
-from telegram import TelegramClient
+import telegram as telegram_client
 
 
 # FIXME: worker invalid config
@@ -11,8 +11,6 @@ celery_client = Celery(
     "background",
     broker=cfg.rabbitmq_url,
 )
-
-telegram_client = TelegramClient(cfg.telegram_token)
 
 
 email_client = EmailClient(
