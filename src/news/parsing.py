@@ -38,7 +38,7 @@ def parse_ithub_news():
                 if not image_link.startswith("http"):
                     image_link = base_url + image_link
                 text = soup.find("article", id="body_news")
-                text = markdownify(text.text)
+                text = markdownify(text.text).replace("\n", "")
                 news_index = int(news['href'].split('/')[-1])
                 # print(news_index, date, title, image_link)
                 data = NewsDao(
