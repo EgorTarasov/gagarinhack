@@ -12,7 +12,8 @@
         <ul id='messages'>
         </ul>
         <script>
-            var ws = new WebSocket("ws://127.0.0.1:8000/chat/ws/297cb0f5-81d6-47c0-8709-e26e320b10d7");
+            var new_id = crypto.randomUUID()
+            var ws = new WebSocket(`ws://127.0.0.1:8000/chat/ws/${new_id}`);
             ws.onmessage = function(event) {
                 var messages = document.getElementById('messages')
                 var message = document.createElement('li')
