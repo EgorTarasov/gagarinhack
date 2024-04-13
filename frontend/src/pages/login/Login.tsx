@@ -5,7 +5,7 @@ import { AuthService } from "@/stores/auth.service.ts";
 import { AuthDto } from "api/models/auth.model.ts";
 import { Link, useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
-import { MOCK_USER } from "@/constants/mocks";
+import { MOCK_HR, MOCK_USER } from "@/constants/mocks";
 import { PasswordField } from "@/components/fields/PasswordField";
 import { VKButton } from "@/components/buttons/VkLoginButton";
 
@@ -17,6 +17,7 @@ export const Login = observer(() => {
   const [isLoginView, setIsLoginView] = useState(true);
   const [repeatPassword, setRepeatPassword] = useState("");
   const [name, setName] = useState("");
+  const [showTestHr, setShowTestHr] = useState(false);
 
   const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -24,12 +25,26 @@ export const Login = observer(() => {
     setIsLoading(true);
     setShowError(false);
     try {
-      const isSuccess = await AuthService.login(authData.username, authData.password);
-      if (isSuccess) {
-        navigate("/");
+      if (isLoginView) {
+        const isSuccess = await AuthService.login(authData.username, authData.password);
+        if (isSuccess) {
+          navigate("/");
+        } else {
+          setShowError(true);
+        }
       } else {
-        setShowError(true);
+        if (authData.password !== repeatPassword) {
+          setShowError(true);
+          return;
+        }
+        const isSuccess = await AuthService.register(authData.username, name, authData.password);
+        if (isSuccess) {
+          navigate("/");
+        } else {
+          setShowError(true);
+        }
       }
+      return;
     } catch {
       setShowError(true);
     } finally {
@@ -46,7 +61,12 @@ export const Login = observer(() => {
   };
 
   const fillTestData = () => {
-    setAuthData(MOCK_USER);
+    if (showTestHr) {
+      setAuthData(MOCK_USER);
+    } else {
+      setAuthData(MOCK_HR);
+    }
+    setShowTestHr((v) => !v);
   };
 
   useEffect(() => {
@@ -148,24 +168,22 @@ export const Login = observer(() => {
             </div>
           </div>
           {showError && (
-            <span className={"text-center text-error text-sm"}>Неверный логин или пароль</span>
+            <span className={"text-center text-error text-sm"}>
+              {isLoginView ? "Неверный логин или пароль" : "Проверьте все поля"}
+            </span>
           )}
           <Button disabled={isLoading} type="submit" className="mt-4">
             {isLoginView ? "Войти" : "Регистрация"}
           </Button>
-
-          {(authData.username !== MOCK_USER.username ||
-            authData.password !== MOCK_USER.password) && (
-            <button
-              type="button"
-              className="text-text-primary/60 text-sm hover:text-text-primary transition-colors duration-200 underline hover:no-underline"
-              onClick={fillTestData}>
-              Тестовый юзер
-            </button>
-          )}
+          <VKButton />
+          <button
+            type="button"
+            className="text-text-primary/60 text-sm hover:text-text-primary transition-colors duration-200 underline hover:no-underline"
+            onClick={fillTestData}>
+            Тестовый {showTestHr ? "юзер" : "админ"}
+          </button>
         </form>
         <div className="h-4" />
-        <VKButton />
       </div>
     </div>
   );

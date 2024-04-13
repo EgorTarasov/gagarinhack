@@ -1,20 +1,23 @@
 import { observer } from "mobx-react-lite";
 import { MainPageViewModel } from "../../main.vm";
 import { FCVM } from "@/utils/fcvm";
-import { IconButton, IconText, Separator } from "@/ui";
-import { FC, useId } from "react";
+import { Separator } from "@/ui";
+import { FC } from "react";
 import ChevronIcon from "@/assets/chevron2.svg";
-import Lightning from "@/assets/lightning.svg";
 import { HorizontalCarousel } from "@/components/swiper/HorizontalCarousel";
-import { useIsMobile } from "@/hooks/useIsMobile";
 import { Link } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
-import { mockNews } from "../../../events/news.page";
 
-export const NewsCard: FC<{ img: string; type: string; title: string; wide?: boolean }> = (x) => {
+export const NewsCard: FC<{
+  id: string;
+  img: string;
+  type: string;
+  title: string;
+  wide?: boolean;
+}> = (x) => {
   return (
-    <Link
-      to={"/news"}
+    <a
+      href={`https://ithub.ru/news/${x.id}`}
       className={twMerge(
         "flex flex-col overflow-hidden border bg-white border-text-primary/20 rounded-2xl w-[220px] h-[270px]",
         x.wide && "w-full"
@@ -28,7 +31,7 @@ export const NewsCard: FC<{ img: string; type: string; title: string; wide?: boo
         <span className="text-primary text-sm">{x.type}</span>
         <p className="multiline-ellipsis">{x.title}</p>
       </div>
-    </Link>
+    </a>
   );
 };
 
@@ -49,8 +52,8 @@ export const NewsSection: FCVM<MainPageViewModel> = observer(({ vm }) => {
         mousewheel={{
           forceToAxis: true
         }}>
-        {mockNews.map((news) => (
-          <NewsCard key={news.id} img={news.img} type={news.type} title={news.title} />
+        {vm.news.map((news) => (
+          <NewsCard key={news.id} img={news.img} type={news.type} title={news.title} id={news.id} />
         ))}
       </HorizontalCarousel>
     </section>

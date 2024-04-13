@@ -9,6 +9,7 @@ import { MainPage } from "../pages/main/main.page.tsx";
 import { Login } from "../pages/login/Login.tsx";
 import { ResetPassword } from "../pages/reset-password/ResetPassword.tsx";
 import { AssistantPage } from "../pages/assistant/assistant.page.tsx";
+import { AttendancePage } from "../pages/admin/attendance/attendance.page.tsx";
 
 export interface RouteType {
   path: string;
@@ -80,6 +81,19 @@ const userRoutes: RouteType[] = [
   }
 ];
 
+const adminRoutes: RouteType[] = [
+  {
+    path: "/attendance",
+    component: () => (
+      <PrivateRoute>
+        <AttendancePage />
+      </PrivateRoute>
+    ),
+    title: "Посещаемость",
+    showInNav: true
+  }
+];
+
 export const globalRoutes: RouteType[] = [
   {
     path: "/login",
@@ -100,7 +114,7 @@ class routesStore {
 
   get routes() {
     if (AuthService.auth.state === "authorized") {
-      return [...globalRoutes, ...userRoutes];
+      return [...globalRoutes, ...userRoutes, ...adminRoutes];
     }
     return globalRoutes;
   }

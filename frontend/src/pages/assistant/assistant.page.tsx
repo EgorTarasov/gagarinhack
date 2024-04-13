@@ -20,11 +20,11 @@ export const AssistantPage = observer(() => {
               key={index}
               className={`${item.isUser ? "justify-end" : "justify-start"} flex gap-2`}>
               <div
-                className={`p-5 rounded-2xl text-text-primary
+                className={`p-5 rounded-2xl text-text-primary max-w-[70%]
                 ${
                   item.isUser
                     ? "bg-primary/20 rounded-br-none"
-                    : "bg-text-primary/5 rounded-bl-none"
+                    : "bg-text-primary/5 rounded-bl-none border border-text-primary/5"
                 }`}>
                 {item.message}
               </div>
@@ -53,6 +53,7 @@ export const AssistantPage = observer(() => {
           className="w-full max-w-none"
           rightIcon={<SendIcon />}
           placeholder="Введите вопрос"
+          disabled={vm.loading}
           aria-label="Введите ваш вопрос здесь"
           value={vm.message}
           onChange={(v) => (vm.message = v)}

@@ -34,10 +34,17 @@ export const ScheduleSection: FCVM<MainPageViewModel> = observer(({ vm }) => {
           ))
         } */}
         <TaskCard
-          isCompleted={false}
-          schedule="12:00"
+          isCompleted={true}
+          schedule="10:00-12:00"
           title="Математика"
           location="Корпус 1"
+          lessonType="Лекция"
+        />
+        <TaskCard
+          isCompleted={false}
+          schedule="12:15-13:45"
+          title="Английский язык"
+          location="Корпус 2"
           lessonType="Лекция"
         />
       </ul>

@@ -20,7 +20,19 @@ export namespace AuthEndpoint {
   };
 
   export const loginVk = async (code: string) => {
-    const result = await api.post<AuthDto.Result>("/auth/login/vk", { code });
+    const result = await api.post<AuthDto.Result>(`/auth/vk?code=${code}`);
+
+    setStoredAuthToken(result.access_token);
+    return parseJwt<AuthDto.Item>(result.access_token);
+  };
+
+  export const register = async (email: string, username: string, password: string) => {
+    const result = await api.post<AuthDto.Result>("/auth/register", {
+      email,
+      first_name: username,
+      last_name: "",
+      password
+    });
 
     setStoredAuthToken(result.access_token);
     return parseJwt<AuthDto.Item>(result.access_token);

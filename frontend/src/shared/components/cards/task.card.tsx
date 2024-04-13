@@ -7,7 +7,7 @@ import LightningIcon from "@/assets/lightning.svg";
 import PointIcon from "@/assets/marker.svg";
 
 interface Props {
-  onFinish?: () => void;
+  onBuildRoute?: () => void;
   isCompleted: boolean;
   schedule: string;
   title: string;
@@ -15,10 +15,10 @@ interface Props {
   lessonType: string;
 }
 
-export const TaskCard = ({ onFinish, ...item }: Props) => {
+export const TaskCard = ({ onBuildRoute, ...item }: Props) => {
   return (
-    <Link
-      to="/tasks/id"
+    <a
+      href="https://yandex.ru/maps/?rtext=~55.835902,37.631128"
       className={twMerge(
         "relative flex gap-3 items-start py-2 transition-all hover:bg-black/5 rounded-lg px-2",
         item.isCompleted && "opacity-60"
@@ -37,17 +37,17 @@ export const TaskCard = ({ onFinish, ...item }: Props) => {
           <IconText icon={PointIcon} text={item.location} alt="Локация" />
         </ul>
       </div>
-      {onFinish ? (
+      {onBuildRoute ? (
         <Button
           disabled={item.isCompleted}
           className="ml-auto my-auto w-fit px-3"
           appearance="secondary"
-          onClick={() => onFinish?.()}>
+          onClick={() => onBuildRoute?.()}>
           {item.isCompleted ? "Завершено" : "В процессе"}
         </Button>
       ) : (
         <Chevron className="ml-auto my-auto" />
       )}
-    </Link>
+    </a>
   );
 };

@@ -7,6 +7,8 @@ import api from "api/utils/api";
 import { EventsEndpoint } from "api/endpoints/events.endpoint";
 import { NewsDto } from "api/models/news.model";
 import { NewsCard } from "../main/sections/news/news.section";
+import { observer } from "mobx-react-lite";
+import { MainPageStore } from "../main/main.vm";
 
 enum Filter {
   ForMe,
@@ -16,39 +18,9 @@ enum Filter {
   Creativity
 }
 
-export const mockNews: NewsDto.Item[] = [
-  {
-    id: "1",
-    img: "/assets/news/learn.png",
-    title: "Команда IThub взяла призовые места на чемпионате Москвы «Московские мастера»!",
-    type: "Обучение"
-  },
-  {
-    id: "2",
-    img: "/assets/news/sport.png",
-    title: "От волейбола до Dota 2: как устроена физкультура в IThub",
-    type: "Спорт"
-  },
-  {
-    id: "3",
-    img: "/assets/news/concert.png",
-    title:
-      "Очень странные дела в IThub или вечеринка с мистическим вайбом: как прошел праздник в BASE",
-    type: "Творчество"
-  },
-  {
-    id: "4",
-    img: "/assets/news/building.png",
-    title:
-      "Новое пространство для образования будущего: в 2024 году откроется корпус IThub на Дмитровской",
-    type: "Спорт"
-  }
-] as const;
-
-export const NewsPage = () => {
+export const NewsPage = observer(() => {
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState<Filter[]>([Filter.ForMe]);
-  const [news, setNews] = useState<NewsDto.Item[]>(mockNews);
 
   const handleFilter = (filter: Filter) => {
     if (filters.includes(filter)) {
@@ -59,7 +31,7 @@ export const NewsPage = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 px-4 mx-auto max-w-screen-desktop fade-enter-done mt-6 sm:mt-10">
+    <div className="flex flex-col pb-4 gap-4 px-4 mx-auto max-w-screen-desktop fade-enter-done mt-6 sm:mt-10">
       <Input
         id={"search"}
         placeholder={"Поиск"}
@@ -100,10 +72,10 @@ export const NewsPage = () => {
         style={{
           gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))"
         }}>
-        {news.map((v, i) => (
-          <NewsCard title={v.title} img={v.img} type={v.type} key={i} wide />
+        {MainPageStore.news.map((v, i) => (
+          <NewsCard id={v.id} title={v.title} img={v.img} type={v.type} key={i} wide />
         ))}
       </ul>
     </div>
   );
-};
+});

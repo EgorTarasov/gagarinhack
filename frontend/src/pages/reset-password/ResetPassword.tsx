@@ -20,11 +20,11 @@ export const ResetPassword = () => {
       };
       if (email?.value) {
         api
-          .post(`/api/auth/send-recover-password?email=${email.value}`)
+          .post(`/auth/password-code?email=${email.value}`)
           .then(() => alert("Письмо отправлено!"));
       } else {
         api
-          .post(`/api/auth/recover-password?token=${token}&new_password=${newPassword?.value}`)
+          .post(`/auth/password-reset?token=${token}&new_password=${newPassword?.value}`)
           .then(() => {
             alert("Пароль успешно изменен!");
             navigate("/login");

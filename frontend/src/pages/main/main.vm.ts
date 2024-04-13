@@ -1,43 +1,34 @@
-import { CourseEndpoint } from "api/endpoints/course.endpoint";
-import { EventsEndpoint } from "api/endpoints/events.endpoint";
-import { TasksEndpoint } from "api/endpoints/tasks.endpoint";
-import { CourseDto, MockCourses } from "api/models/course.model";
-import { EventDto, MockEvents } from "api/models/event.model";
-import { TaskDto } from "api/models/task.model";
-import api from "api/utils/api";
-import { makeAutoObservable } from "mobx";
+import { AuthService } from "@/stores/auth.service";
+import { AchievementEndpoint } from "api/endpoints/achievement.endpoint";
+import { NewsEndpoint } from "api/endpoints/news.endpoint";
+import { AchievementDto } from "api/models/achievement.model";
+import { NewsDto } from "api/models/news.model";
+import { autorun, makeAutoObservable } from "mobx";
 
 export class MainPageViewModel {
-  public events: EventDto.Item[] | null = null;
-  public courses: CourseDto.Item[] | null = null;
-  public tasks: TaskDto.Item[] | null = null;
+  news: NewsDto.Item[] = [];
+  achievements: AchievementDto.Item[] = [];
   public isLoading = false;
 
   constructor() {
     makeAutoObservable(this);
     void this.init();
+
+    autorun(() => {
+      if (AuthService.auth.state === "authorized") {
+        AchievementEndpoint.current(AuthService.auth.user.id.toString()).then((res) => {
+          this.achievements = res;
+        });
+      }
+    });
   }
 
   private async init() {
-    const [coursesRes, tasksRes, eventsRes] = await Promise.all([
-      CourseEndpoint.current(),
-      TasksEndpoint.current(),
-      EventsEndpoint.current()
-    ]);
-    this.courses = coursesRes.map(CourseDto.convertDtoToItem);
-    this.tasks = tasksRes.map(TaskDto.convertDtoToItem);
-    this.events = eventsRes.map(EventDto.convertDtoToItem);
+    const [newsRes] = await Promise.all([NewsEndpoint.current()]);
+    this.news = newsRes;
+    console.log(newsRes);
     this.isLoading = false;
   }
-
-  public async sendAssistantMessage(message: string) {
-    const res = await api.post("/api/assistant", { message });
-  }
-
-  public async registerEvent(id: number) {
-    await EventsEndpoint.enroll(id);
-
-    const res = await EventsEndpoint.current();
-    this.events = res.map(EventDto.convertDtoToItem);
-  }
 }
+
+export const MainPageStore = new MainPageViewModel();
