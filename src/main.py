@@ -12,6 +12,7 @@ from auth.router import router as auth_router
 from timetable.router import router as timetable_router
 from news.router import router as news_router
 from chat.router import router as chat_router
+from fastapi.middleware.cors import CORSMiddleware
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
@@ -30,7 +31,20 @@ def create_app() -> FastAPI:
         debug=cfg.debug,
         lifespan=lifespan,
     )
-    logging.basicConfig(level=logging.DEBUG)
+
+    origins = [
+        "http://localhost:9000",
+        "https://gagarinhack.larek.tech",
+        "http://localhost:5173",
+    ]
+
+    new_app.add_middleware(
+            CORSMiddleware,
+            allow_origins=origins,
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+    )
     
     new_app.include_router(auth_router)
     new_app.include_router(timetable_router)

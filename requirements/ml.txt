@@ -1,0 +1,10 @@
+huggingface_hub
+transformers
+langchain
+tika
+accelerate
+bitsandbytes>0.37.0
+sentence_transformers
+faiss-gpu
+pacmap
+pgvector

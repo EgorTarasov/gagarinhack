@@ -1,70 +1,65 @@
-version: "3.9"
-
-
+version: '3.9'
 volumes:
   postgres-data:
   redis-data:
   minio-storage:
+  models-cache:
 
 services:
   backend:
     build:
-      context: "."
-      dockerfile: "Dockerfile"
+      context: .
+      dockerfile: Dockerfile
     restart: always
     env_file:
-      - ".env"
+      - .env
     ports:
-      - "9000:8000"
-
+      - '9000:8000'
   postgres:
-    image: pgvector/pgvector:pg15
+    image: 'pgvector/pgvector:pg15'
     restart: always
     env_file:
-      - ".env"
+      - .env
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - 'postgres-data:/var/lib/postgresql/data'
     ports:
-      - "25000:5432"
-    command: -p 25000
-
-
+      - '25000:5432'
+    command: '-p 25000'
   rabbitmq:
-    image: rabbitmq:3.10.7-management
+    image: 'rabbitmq:3.10.7-management'
     hostname: rabbitmq
     restart: always
     env_file:
       - .env
     environment:
-      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit log_levels [{connection,error},{default,error}] disk_free_limit 2147483648
+      - >-
+        RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit log_levels
+        [{connection,error},{default,error}] disk_free_limit 2147483648
     ports:
-      - "15672:15672"
-      - "5672:5672"
-
+      - '15672:15672'
+      - '5672:5672'
   redis:
-    image: redis:7.2.4
+    image: 'redis:7.2.4'
     restart: always
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
-      - redis-data:/root/redis
+      - 'redis-data:/root/redis'
     env_file:
       - .env
-
-  # minio:
-  #  image: minio/minio:latest
-  #  command: server --console-address ":9001" /data/
-  #  ports:
-  #    - "9000:9000"
-  #    - "9001:9001"
-  #  environment:
-  #    MINIO_ROOT_USER: ozontech
-  #    MINIO_ROOT_PASSWORD: minio123
-  #  volumes:
-  #    - minio-storage:/data
-  #  healthcheck:
-  #    test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-  #    interval: 30s
-  #    timeout: 20s
-  #    retries: 3
-
+  search-engine:
+    build:
+      context: ./src/ml
+      dockerfile: Dockerfile
+    environment:
+      - 'PG_CONN_STR=""'
+      - 'MONGO_CONN_STR=""'
+      - 'OLLAMA_API=""'
+    restart: always
+    volumes:
+      - 'models-cache:/root/.cache/huggingface/hub/'
+    ports:
+      - '10000:10000'
+    command:
+      - python3
+      - server.py

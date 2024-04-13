@@ -4,7 +4,7 @@ from fastapi import APIRouter, WebSocket, Depends
 from fastapi.responses import HTMLResponse
 from data import get_connection
 from asyncpg.pool import PoolConnectionProxy
-import aiofiles
+from ml import client
 from . import service
 from .schema import  MlQuery, MlResponse
 
@@ -22,6 +22,7 @@ async def get():
 async def websocket_endpoint(
         websocket: WebSocket,
         chat_id: uuid.UUID,
+        ml_client: client.MLClient = Depends(client.get_ml_service),
         db: PoolConnectionProxy = Depends(get_connection),
 ):
     user_id = 2
@@ -30,5 +31,5 @@ async def websocket_endpoint(
     while True:
         data = MlQuery.model_validate(await websocket.receive_json())
 
-        async for msg in service.inference(db, chat_id, data):
+        async for msg in service.inference(db, ml_client, chat_id, data):
             await websocket.send_json(msg.model_dump())

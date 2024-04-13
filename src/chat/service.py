@@ -3,7 +3,7 @@ from .schema import MlQuery, MlResponse
 import asyncio
 from . import crud
 from uuid import UUID
-
+from ml.client import MLClient
 
 async def get_response():
     for i in range(10):
@@ -15,12 +15,11 @@ async def save_chat(db: PoolConnectionProxy, user_id: int, chat_id: UUID) -> UUI
     return chat_id
 
 
-async def inference(db: PoolConnectionProxy, chat_id: UUID, query: MlQuery):
+async def inference(db: PoolConnectionProxy, ml_service: MLClient, chat_id: UUID, query: MlQuery):
     response_txt = ""
     metadata = []
     q_id = await crud.save_query(db, chat_id, query.text)
-    async for msg in get_response():
-        # TODO: connect to ml service and get stream response
+    for msg in ml_service.stream_response(query.text):
         response_txt += msg
         yield MlResponse.model_validate({"query_id": q_id, "text":msg, "metadata": ["meta1"]})
     yield MlResponse.model_validate({"query_id": q_id, "text": "", "metadata": [], "last": True})

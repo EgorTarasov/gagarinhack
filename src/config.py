@@ -13,6 +13,8 @@ class Config(BaseSettings):
     debug: bool = False
     logging_level: str = "info"
 
+    search_engine_uri: str = "localhost:10000"
+
     max_upload_size: int = 5 * 1024 * 1024  # 5MB
 
     postgres_host: str
