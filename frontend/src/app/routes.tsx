@@ -1,13 +1,10 @@
 import { ComponentType } from "react";
-import { ProfilePage } from "../pages/profile/profile.page.tsx";
-import { EventsPage } from "../pages/events/events.page.tsx";
-import { EducationPage } from "../pages/education/education.page.tsx";
+import { NewsPage } from "../pages/events/news.page.tsx";
 import { TasksPage } from "../pages/tasks/tasks.page.tsx";
-import { StaffPage } from "../pages/staff/staff.page.tsx";
+import { ContactsPage } from "../pages/staff/staff.page.tsx";
 import { PrivateRoute } from "@/hoc/PrivateRoute.tsx";
 import { AuthService } from "@/stores/auth.service.ts";
 import { makeAutoObservable } from "mobx";
-import { OnboardingPage } from "../pages/onboarding/onboarding.page.tsx";
 import { MainPage } from "../pages/main/main.page.tsx";
 import { Login } from "../pages/login/Login.tsx";
 import { ResetPassword } from "../pages/reset-password/ResetPassword.tsx";
@@ -43,55 +40,6 @@ const userRoutes: RouteType[] = [
     title: "Ассистент"
   },
   {
-    path: "/me",
-    component: () => (
-      <PrivateRoute>
-        <ProfilePage />
-      </PrivateRoute>
-    ),
-    title: "Профиль"
-  },
-  {
-    path: "/onboarding",
-    component: () => (
-      <PrivateRoute>
-        <OnboardingPage />
-      </PrivateRoute>
-    ),
-    title: "Онбординг",
-    showInNav: true
-  },
-  {
-    path: "/education",
-    component: () => (
-      <PrivateRoute>
-        <EducationPage />
-      </PrivateRoute>
-    ),
-    title: "Обучение",
-    showInNav: true
-  },
-  {
-    path: "/education/:id",
-    component: () => (
-      <PrivateRoute>
-        <EducationPage />
-      </PrivateRoute>
-    ),
-    title: "Обучение",
-    showInNav: false
-  },
-  {
-    path: "/education/:id/task/:taskId",
-    component: () => (
-      <PrivateRoute>
-        <EducationPage />
-      </PrivateRoute>
-    ),
-    title: "Обучение",
-    showInNav: false
-  },
-  {
     path: "/tasks",
     component: () => (
       <PrivateRoute>
@@ -111,30 +59,20 @@ const userRoutes: RouteType[] = [
     title: "Задания"
   },
   {
-    path: "/events",
+    path: "/news",
     component: () => (
       <PrivateRoute>
-        <EventsPage />
+        <NewsPage />
       </PrivateRoute>
     ),
-    title: "Мероприятия",
+    title: "Новости",
     showInNav: true
-  },
-  {
-    path: "/events/:id",
-    component: () => (
-      <PrivateRoute>
-        <EventsPage />
-      </PrivateRoute>
-    ),
-    title: "Мероприятия",
-    showInNav: false
   },
   {
     path: "/contacts",
     component: () => (
       <PrivateRoute>
-        <StaffPage />
+        <ContactsPage />
       </PrivateRoute>
     ),
     title: "Контакты",

@@ -5,6 +5,8 @@ import SearchIcon from "@/assets/search.svg";
 import { EventCard } from "@/components/cards/event-card.widget";
 import api from "api/utils/api";
 import { EventsEndpoint } from "api/endpoints/events.endpoint";
+import { NewsDto } from "api/models/news.model";
+import { NewsCard } from "../main/sections/news/news.section";
 
 enum Filter {
   ForMe,
@@ -14,11 +16,39 @@ enum Filter {
   Creativity
 }
 
-export const EventsPage = () => {
+export const mockNews: NewsDto.Item[] = [
+  {
+    id: "1",
+    img: "/assets/news/learn.png",
+    title: "Команда IThub взяла призовые места на чемпионате Москвы «Московские мастера»!",
+    type: "Обучение"
+  },
+  {
+    id: "2",
+    img: "/assets/news/sport.png",
+    title: "От волейбола до Dota 2: как устроена физкультура в IThub",
+    type: "Спорт"
+  },
+  {
+    id: "3",
+    img: "/assets/news/concert.png",
+    title:
+      "Очень странные дела в IThub или вечеринка с мистическим вайбом: как прошел праздник в BASE",
+    type: "Творчество"
+  },
+  {
+    id: "4",
+    img: "/assets/news/building.png",
+    title:
+      "Новое пространство для образования будущего: в 2024 году откроется корпус IThub на Дмитровской",
+    type: "Спорт"
+  }
+] as const;
+
+export const NewsPage = () => {
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState<Filter[]>([Filter.ForMe]);
-  const [events, setEvents] = useState<EventDto.Item[]>([]);
-  const [filtered, setFiltered] = useState(events);
+  const [news, setNews] = useState<NewsDto.Item[]>(mockNews);
 
   const handleFilter = (filter: Filter) => {
     if (filters.includes(filter)) {
@@ -27,46 +57,6 @@ export const EventsPage = () => {
       setFilters([...filters, filter]);
     }
   };
-
-  const fetchEvents = async () => {
-    const res = await EventsEndpoint.current();
-    setEvents(res.map(EventDto.convertDtoToItem));
-  };
-
-  const registerEvent = async (id: number) => {
-    await EventsEndpoint.enroll(id);
-    await fetchEvents();
-  };
-
-  useEffect(() => {
-    fetchEvents();
-  }, []);
-
-  useEffect(() => {
-    const filtered = events.filter((event) => {
-      if (filters.includes(Filter.Sport)) {
-        return event.category === "sport";
-      }
-      if (filters.includes(Filter.Education)) {
-        return event.category === "education";
-      }
-      if (filters.includes(Filter.Volunteering)) {
-        return event.category === "charity";
-      }
-      if (filters.includes(Filter.Creativity)) {
-        return event.category === "art";
-      }
-      return true;
-    });
-    setFiltered(filtered);
-  }, [events, filters]);
-
-  useEffect(() => {
-    const newFiltered = filtered.filter((event) => {
-      return event.title.toLowerCase().includes(search.toLowerCase());
-    });
-    setFiltered(newFiltered);
-  }, [search]);
 
   return (
     <div className="flex flex-col gap-4 px-4 mx-auto max-w-screen-desktop fade-enter-done mt-6 sm:mt-10">
@@ -108,19 +98,11 @@ export const EventsPage = () => {
       <ul
         className="grid gap-4"
         style={{
-          gridTemplateColumns: "repeat(auto-fit, minmax(256px, 1fr))"
+          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))"
         }}>
-        {events.map((v, i) => (
-          <EventCard item={v} onRegisterClick={() => registerEvent(v.id)} key={v.id} wide />
+        {news.map((v, i) => (
+          <NewsCard title={v.title} img={v.img} type={v.type} key={i} wide />
         ))}
-        {events.length === 0 && (
-          <div className="flex flex-col items-center justify-center gap-4 mt-6">
-            <p className="text-2xl font-bold text-center">Ничего не найдено</p>
-            <p className="text-gray-500 text-center">
-              Попробуйте изменить фильтры <br /> или подождать подходящих мероприятий
-            </p>
-          </div>
-        )}
       </ul>
     </div>
   );

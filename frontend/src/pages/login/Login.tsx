@@ -14,6 +14,9 @@ export const Login = observer(() => {
   const [showError, setShowError] = useState<boolean>(false);
   const [authData, setAuthData] = useState<AuthDto.Login>(MOCK_USER);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoginView, setIsLoginView] = useState(true);
+  const [repeatPassword, setRepeatPassword] = useState("");
+  const [name, setName] = useState("");
 
   const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -71,7 +74,7 @@ export const Login = observer(() => {
           className={"flex flex-col gap-3 w-full"}>
           <Input
             disabled={isLoading}
-            label={"Логин"}
+            label={"Почта"}
             type="email"
             required
             aria-label={"Почта"}
@@ -82,6 +85,21 @@ export const Login = observer(() => {
             placeholder={"Введите почту"}
             onChange={handleUsernameChange}
           />
+          {!isLoginView && (
+            <Input
+              disabled={isLoading}
+              label={"Имя"}
+              type="text"
+              required
+              aria-label={"Имя"}
+              autoComplete={"name"}
+              name={"name"}
+              value={name}
+              error={showError}
+              placeholder={"Введите имя"}
+              onChange={setName}
+            />
+          )}
           <div className={"flex flex-col flex-end gap-1"}>
             <PasswordField
               disabled={isLoading}
@@ -95,31 +113,56 @@ export const Login = observer(() => {
               placeholder={"Введите пароль"}
               onChange={handlePasswordChange}
             />
-            <div className={"flex items-center justify-between"}>
-              <Link
-                to="/reset-password"
-                className={
-                  "text-text-primary/60 text-sm hover:text-text-primary transition-colors duration-200"
-                }>
-                Забыли пароль?
-              </Link>
-              {(authData.username !== MOCK_USER.username ||
-                authData.password !== MOCK_USER.password) && (
-                <button
-                  type="button"
-                  className="text-text-primary/60 text-sm hover:text-text-primary transition-colors duration-200 underline hover:no-underline"
-                  onClick={fillTestData}>
-                  Тестовый юзер
-                </button>
+            <div className="h-1"></div>
+            {!isLoginView && (
+              <PasswordField
+                disabled={isLoading}
+                label={"Повторите пароль"}
+                required
+                autoComplete={"repeat-password"}
+                name={"repeat-password"}
+                value={repeatPassword}
+                error={showError}
+                aria-label={"Повторите Пароль"}
+                placeholder={"Введите пароль повторно"}
+                onChange={setRepeatPassword}
+              />
+            )}
+            <div className={"flex items-center"}>
+              {isLoginView && (
+                <Link
+                  to="/reset-password"
+                  className={
+                    "text-text-primary/60 text-sm hover:text-text-primary transition-colors duration-200"
+                  }>
+                  Забыли пароль?
+                </Link>
               )}
+              <div className="flex-1"></div>
+              <button
+                type="button"
+                className="text-text-primary/60 text-sm hover:text-text-primary transition-colors duration-200"
+                onClick={() => setIsLoginView((v) => !v)}>
+                {!isLoginView ? "Войти" : "Регистрация"}
+              </button>
             </div>
           </div>
           {showError && (
             <span className={"text-center text-error text-sm"}>Неверный логин или пароль</span>
           )}
           <Button disabled={isLoading} type="submit" className="mt-4">
-            Войти
+            {isLoginView ? "Войти" : "Регистрация"}
           </Button>
+
+          {(authData.username !== MOCK_USER.username ||
+            authData.password !== MOCK_USER.password) && (
+            <button
+              type="button"
+              className="text-text-primary/60 text-sm hover:text-text-primary transition-colors duration-200 underline hover:no-underline"
+              onClick={fillTestData}>
+              Тестовый юзер
+            </button>
+          )}
         </form>
         <div className="h-4" />
         <VKButton />

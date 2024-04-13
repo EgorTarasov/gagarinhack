@@ -1,11 +1,18 @@
 import { makeAutoObservable } from "mobx";
-import io from "socket.io-client";
 
 interface MessageItem {
   message: string;
   isUser: boolean;
   link?: string;
 }
+
+interface MessageEvent {
+  id: string;
+  text?: string;
+  metadata?: string[];
+}
+
+type Message = string;
 
 export class AssistantViewModel {
   constructor(public message: string) {
@@ -14,18 +21,17 @@ export class AssistantViewModel {
       this.sendMessage();
     }
 
-    this.socket.on("message", (v) => this.receiveMessage(v));
+    this.ws = new WebSocket("ws://localhost:8080");
+    this.ws.addEventListener("ключ", (data) => console.log(data));
   }
 
-  socket = io(import.meta.env.VITE_SOCKET_URL, {
-    transports: ["websocket"],
-    upgrade: false
-  });
+  ws;
 
   messages: MessageItem[] = [];
   sendMessage = () => {
-    this.messages.push({ message: this.message, isUser: true });
-    this.socket.emit("message", this.message);
+    if (!this.message.trim().length) return;
+
+    this.messages.push({ message: this.message, isUser: false });
     this.message = "";
   };
 

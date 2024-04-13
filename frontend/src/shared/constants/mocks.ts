@@ -4,6 +4,6 @@ export const MOCK_HR = {
 } as const;
 
 export const MOCK_USER = {
-  username: "proscom.ledakov@yandex.ru",
-  password: "Test123456"
+  username: "string@string.ru",
+  password: "string"
 } as const;

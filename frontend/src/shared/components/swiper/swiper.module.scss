@@ -3,6 +3,9 @@
     padding-inline: 16px;
     padding-block: 1px;
     overflow: hidden;
+    &.disablePadding {
+        padding-inline: 0;
+    }
     :global(.swiper-wrapper) {
         width: fit-content;
     }

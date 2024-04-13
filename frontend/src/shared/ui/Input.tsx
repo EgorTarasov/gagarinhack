@@ -9,6 +9,7 @@ export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElem
   errorText?: string | null;
   allowClear?: boolean;
   rightIcon?: JSX.Element;
+  rightIconIsButton?: boolean;
   leftIcon?: JSX.Element | false;
   onIconClick?: () => void;
   label?: string;
@@ -61,6 +62,7 @@ export const Input: React.FC<InputProps> = ({
       )}
       {rightIcon && !allowClear && (
         <button
+          type={rest.rightIconIsButton ? "button" : undefined}
           onClick={onIconClick}
           aria-hidden={onIconClick ? undefined : true}
           aria-label="Отправить значение поля"

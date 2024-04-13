@@ -21,7 +21,7 @@ export default {
           border: "#E5E5E5"
         },
         text: {
-          primary: "#1D1D1D"
+          primary: "#1D1D1D",
         },
         event: {
           sport: "#EB5284",

@@ -22,7 +22,7 @@ const Collapsible = ({
           <Disclosure.Button className={"w-full flex flex-col items-center justify-between"}>
             <div
               className={twMerge(
-                "flex gap-3 items-center justify-between w-full h-8 ",
+                "flex gap-3 items-center justify-between w-full h-8",
                 !withoutPadding && "px-4"
               )}>
               <h2 className="font-medium text-xl">{title}</h2>
@@ -33,9 +33,9 @@ const Collapsible = ({
                 )}
               />
             </div>
-            <Separator className="my-3" />
+            <Separator className="mt-3" />
           </Disclosure.Button>
-          <Disclosure.Panel className="py-3">{children}</Disclosure.Panel>
+          <Disclosure.Panel className="pb-3">{children}</Disclosure.Panel>
         </>
       )}
     </Disclosure>

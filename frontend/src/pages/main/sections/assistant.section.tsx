@@ -2,7 +2,7 @@ import { FCVM } from "@/utils/fcvm";
 import { MainPageViewModel } from "../main.vm";
 import SendIcon from "@/assets/send.svg";
 import ChatBotIcon from "@/assets/chatBot.svg";
-import { FormEvent, useId, useState } from "react";
+import { useId, useState } from "react";
 import { Input } from "@/ui";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import AssistantIllustration from "../assets/assistant.svg";
@@ -48,7 +48,10 @@ export const AssistantSection: FCVM<MainPageViewModel> = observer(({ vm }) => {
             id={assistantId}
             leftIcon={
               isMobile && (
-                <ChatBotIcon aria-label="На иллюстрации портрет улыбающегося человека в костюме, в роли цифрового наставника" />
+                <ChatBotIcon
+                  width={24}
+                  aria-label="На иллюстрации портрет улыбающегося человека в костюме, в роли цифрового наставника"
+                />
               )
             }
             placeholder="Введите вопрос"
