@@ -20,4 +20,4 @@ bs4==0.0.2
 pandas==2.2.2
 openpyxl==3.1.2
 markdownify==0.12.1
-
+websockets==12.0
