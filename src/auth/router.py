@@ -40,10 +40,10 @@ async def register(
         return schema.Token(access_token=token)
     except AuthException as e:
         print(e)
-        return Response(status_code=400, content=e)
+        return Response(status_code=400, content=str(e))
     except Exception as e:
         logging.error(e)
-        return Response(status_code=500, content=e)
+        return Response(status_code=500, content=str(e))
 
 
 @router.post("/login/vk")

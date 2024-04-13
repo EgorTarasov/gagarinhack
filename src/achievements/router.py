@@ -15,7 +15,7 @@ from .schema import AchievementCreate, AchievementDto
 router = APIRouter(prefix="/achievements", tags=["achievements"])
 
 
-@router.post("/upload", response_model=int)
+@router.post("/upload", response_model=AchievementDto)
 async def upload_achievement(
         achievement: AchievementCreate = Depends(),
         file: UploadFile = File(...),
@@ -27,7 +27,8 @@ async def upload_achievement(
     minio_client.put_object(bucket_name=cfg.s3_bucket, object_name=static_name,
                             data=file.file, length=file.size)
     achievement_id = await service.upload_achievement(db, achievement, static_name)
-    return achievement_id
+    achievement = await service.get_achievement(db, achievement_id)
+    return achievement
 
 
 @router.get("/get", response_model=list[AchievementDto])
