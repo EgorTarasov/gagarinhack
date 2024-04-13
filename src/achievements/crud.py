@@ -3,7 +3,7 @@ from asyncpg.pool import PoolConnectionProxy
 from achievements.schema import AchievementCreate, AchievementDto
 
 
-async def get_by_id(db: PoolConnectionProxy, achievement_id: int, offset: int = 0, limit: int = 100) -> AchievementDto:
+async def get_by_id(db: PoolConnectionProxy, achievement_id: int) -> AchievementDto:
     """Получение достижения пользователя"""
     query = ('SELECT id, user_id, title, date, place, description, event_link, file_link, type '
              'FROM "achievements" WHERE id=$1')

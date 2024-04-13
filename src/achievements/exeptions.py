@@ -1,17 +1,18 @@
-class AuthException(Exception):
-    """Base exception class for authentication errors."""
+from lifespan import InvalidDataException
 
 
-class InvalidCredentialsException(AuthException):
+class InvalidCredentialsException(InvalidDataException):
     """Exception raised when the provided credentials are invalid."""
 
 
-class UserNotFoundException(AuthException):
+class UserNotFoundException(InvalidDataException):
     """Exception raised when the user is not found."""
 
 
-class AccountLockedException(AuthException):
-    """Exception raised when the user's account is locked."""
+class InvalidPassword(InvalidDataException):
+    """Exception raised when the password is invalid."""
 
+class NotAuthorized(InvalidDataException):
+    """Exception raised when user is not authorized."""
 
 # Add more specific exceptions as needed...

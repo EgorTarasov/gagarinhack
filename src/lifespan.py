@@ -1,5 +1,7 @@
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
+
 from data import Database
 from config import cfg
 
@@ -11,3 +13,7 @@ async def lifespan(app: FastAPI):
     app.state.db = db
     yield
     await db.pool.close()
+
+
+class InvalidDataException(Exception):
+    """Base exception class for input errors."""
