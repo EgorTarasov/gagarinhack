@@ -1,6 +1,8 @@
 import asyncio
 
 from asyncpg.pool import PoolConnectionProxy
+
+from achievements.exeptions import InvalidPassword, NotAuthorized
 from worker import send_email_recovery_code, send_telegram_notification
 from config import cfg
 import requests
@@ -26,11 +28,11 @@ async def login(
     """
     data = await crud.get_hashed_password(db_conn, email)
     if data is None:
-        raise ValueError("User not found")
+        raise UserNotFoundException("User not found")
     _id, hashed_password = data
 
     if not PasswordManager.verify_password(password, hashed_password):
-        raise ValueError("Invalid password")
+        raise InvalidPassword("Invalid password")
 
     return JWTEncoder.create_access_token(_id)
 
@@ -42,10 +44,7 @@ async def register(db_conn: PoolConnectionProxy, user: schema.UserCreate) -> str
         raise UserNotFoundException(f"Пользователь с почтой {user.email} уже существует")
 
     user.password = PasswordManager.hash_password(user.password)
-
     new_id = await crud.create_user(db_conn, user)
-    if new_id is None:
-        raise ValueError("Error creating user")
 
     return JWTEncoder.create_access_token(new_id)
 
@@ -53,7 +52,7 @@ async def register(db_conn: PoolConnectionProxy, user: schema.UserCreate) -> str
 async def send_password_code(db_conn: PoolConnectionProxy, redis, email: str) -> None:
     user = await crud.get_by_email(db_conn, email)
     if user is None:
-        raise ValueError("User not found")
+        raise UserNotFoundException("User not found")
     code = PasswordManager.get_reset_code(email)
     await crud.save_reset_code(redis, email, code)
 
@@ -79,7 +78,7 @@ async def auth_vk(db_conn: PoolConnectionProxy, code: str) -> str:
     if response.status_code != 200:
         log.info(response.status_code)
         log.info(response.json())
-        raise Exception("unathorized")
+        raise NotAuthorized("Пользователь не авторизован")
 
     # Gets user data from vk
 

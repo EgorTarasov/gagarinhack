@@ -1,9 +1,6 @@
-import uuid
-from http.client import HTTPResponse
-
 import minio
 from fastapi import APIRouter, Depends, UploadFile, File
-from fastapi.responses import FileResponse, StreamingResponse, Response
+from fastapi.responses import StreamingResponse
 from asyncpg.pool import PoolConnectionProxy
 
 from config import cfg
@@ -23,10 +20,7 @@ async def upload_achievement(
         minio_client: minio.Minio = Depends(get_minio)
 ):
     """Загрузка достижения"""
-    static_name = f"{uuid.uuid4()}.{file.filename.split('.')[-1]}"
-    minio_client.put_object(bucket_name=cfg.s3_bucket, object_name=static_name,
-                            data=file.file, length=file.size)
-    achievement_id = await service.upload_achievement(db, achievement, static_name)
+    achievement_id = await service.upload_achievement(db, minio_client, file, achievement)
     achievement = await service.get_achievement(db, achievement_id)
     return achievement
 

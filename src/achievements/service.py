@@ -1,11 +1,19 @@
+import uuid
+
+import minio
 from asyncpg.pool import PoolConnectionProxy
+from fastapi import UploadFile
 
 from achievements import crud
 from achievements.schema import AchievementCreate, AchievementDto
+from config import cfg
 
 
-async def upload_achievement(db_conn: PoolConnectionProxy, achievement: AchievementCreate,
-                             static_name: str) -> int:
+async def upload_achievement(db_conn: PoolConnectionProxy,  minio_client: minio.Minio,
+                             file: UploadFile, achievement: AchievementCreate) -> int:
+    static_name = f"{uuid.uuid4()}.{file.filename.split('.')[-1]}"
+    minio_client.put_object(bucket_name=cfg.s3_bucket, object_name=static_name,
+                            data=file.file, length=file.size)
     return await crud.create(db_conn, achievement, static_name)
 
 

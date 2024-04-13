@@ -1,5 +1,5 @@
 import logging
-from fastapi import APIRouter, Depends, Response, Query
+from fastapi import APIRouter, Depends, Query, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from asyncpg.pool import PoolConnectionProxy
 from redis import Redis
@@ -9,7 +9,6 @@ from . import schema, crud, service
 
 from data import get_connection, get_redis
 from .dependency import get_current_user
-from .exeptions import AuthException
 from .models import UserDao
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -21,12 +20,8 @@ async def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
 ):
     """Вход по почте и паролю (не потребуется после интеграции с LMS ITHub)"""
-    # TODO: valid err codes
-    try:
-        token = await service.login(db, form_data.username, form_data.password)
-        return schema.Token(access_token=token)
-    except ValueError as e:
-        return {"detail": str(e)}
+    token = await service.login(db, form_data.username, form_data.password)
+    return schema.Token(access_token=token)
 
 
 @router.post("/register", response_model=schema.Token)
@@ -35,15 +30,8 @@ async def register(
     db: PoolConnectionProxy = Depends(get_connection),
 ):
     """Регистрация пользователя (не потребуется после интеграции с LMS ITHub)"""
-    try:
-        token = await service.register(db, user)
-        return schema.Token(access_token=token)
-    except AuthException as e:
-        print(e)
-        return Response(status_code=400, content=str(e))
-    except Exception as e:
-        logging.error(e)
-        return Response(status_code=500, content=str(e))
+    token = await service.register(db, user)
+    return schema.Token(access_token=token)
 
 
 @router.post("/login/vk")
@@ -61,10 +49,7 @@ async def password_code(
     redis_client: Redis = Depends(get_redis),
 ):
     """Восстановление пароля по почте"""
-    try:
-        return await service.send_password_code(db_conn, redis_client, email)
-    except ValueError as e:
-        return {"detail": str(e)}
+    return await service.send_password_code(db_conn, redis_client, email)
 
 
 @router.get("/password-reset")
@@ -79,11 +64,8 @@ async def auth_vk(
     db_conn: PoolConnectionProxy = Depends(get_connection),
 ):
     """Авторизация ВК по коду подтверждения"""
-    try:
-        token = await service.auth_vk(db_conn, code)
-        return schema.Token(access_token=token)
-    except Exception as e:
-        return {"detail": str(e)}
+    token = await service.auth_vk(db_conn, code)
+    return schema.Token(access_token=token)
 
 
 @router.get("/me", response_model=UserDao)
