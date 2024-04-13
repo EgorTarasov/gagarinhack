@@ -12,6 +12,7 @@ from datetime import datetime
 from . import schema
 from . import models
 from . import crud
+from .exeptions import UserNotFoundException
 
 
 async def login(
@@ -38,7 +39,7 @@ async def register(db_conn: PoolConnectionProxy, user: schema.UserCreate) -> str
     data = await crud.get_by_email(db_conn, user.email)
 
     if data is not None:
-        raise ValueError("User already exists")
+        raise UserNotFoundException(f"Пользователь с почтой {user.email} уже существует")
 
     user.password = PasswordManager.hash_password(user.password)
 

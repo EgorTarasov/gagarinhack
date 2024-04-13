@@ -12,6 +12,7 @@ router = APIRouter(prefix="/news", tags=["news"])
 async def parse_news(
     db: PoolConnectionProxy = Depends(get_connection)
 ):
+    """Синхронизация новостей с сайта (не потребуется после интеграции с LMS ITHub)"""
     # TODO: valid err codes
     try:
         return await service.parse_news(db)
@@ -25,6 +26,7 @@ async def get_news(
     offset: int = Query(0),
     limit: int = Query(100)
 ):
+    """Подбор рекомендованных новостей с сайта"""
     # TODO: valid err codes
     try:
         return await service.get_news(db, offset, limit)

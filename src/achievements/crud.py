@@ -8,7 +8,6 @@ async def get_all(db: PoolConnectionProxy, user_id: int, offset: int = 0, limit:
     query = ('SELECT id, user_id, title, date, place, description, event_link, file_link, type FROM "achievements" '
              'WHERE user_id=$1 ORDER BY date DESC OFFSET $2 LIMIT $3')
     rows = await db.fetch(query, user_id, offset, limit)
-    print(dict(rows[0]))
     return [AchievementDto(**row) for row in rows]
 
 

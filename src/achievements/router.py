@@ -22,6 +22,7 @@ async def upload_achievement(
         db: PoolConnectionProxy = Depends(get_connection),
         minio_client: minio.Minio = Depends(get_minio)
 ):
+    """Загрузка достижения"""
     static_name = f"{uuid.uuid4()}.{file.filename.split('.')[-1]}"
     minio_client.put_object(bucket_name=cfg.s3_bucket, object_name=static_name,
                             data=file.file, length=file.size)
@@ -34,6 +35,7 @@ async def get_achievements(
         user_id: int,
         db: PoolConnectionProxy = Depends(get_connection)
 ):
+    """Получение достижений пользователя"""
     achievements = await service.download_achievements(db, user_id=user_id)
     return achievements
 
@@ -43,6 +45,7 @@ async def download_achievement(
         file_link: str,
         minio_client: minio.Minio = Depends(get_minio)
 ):
+    """Выгрузка файла-подтверждения достижения (например, диплома призёра)x"""
     obj = minio_client.get_object(cfg.s3_bucket, file_link)
     return StreamingResponse(
         obj,
