@@ -2,7 +2,7 @@ import logging
 import asyncpg as pg
 from typing import Any, AsyncGenerator, Generator
 import redis
-from minio import Minio
+import minio
 from asyncpg.pool import PoolConnectionProxy
 from config import Config, cfg
 
@@ -35,15 +35,19 @@ redis_client = redis.Redis(
     port=cfg.redis_port,
 )
 
-# minio_client = Minio(
-#     cfg.s3_endpoint,
-#     cfg.aws_secret_access_key,
-#     cfg.aws_secret_access_key,
-# )
+minio_client = minio.Minio(
+    cfg.s3_endpoint,
+    access_key=cfg.aws_access_key_id,
+    secret_key=cfg.aws_secret_access_key,
+)
 
 
 async def get_redis() -> AsyncGenerator[redis.Redis, None]:
     yield redis_client
+
+
+async def get_minio() -> AsyncGenerator[minio.Minio, None]:
+    yield minio_client
 
 
 async def get_connection() -> AsyncGenerator[PoolConnectionProxy, None]:

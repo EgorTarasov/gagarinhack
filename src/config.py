@@ -47,6 +47,7 @@ class Config(BaseSettings):
     s3_endpoint: str = "localhost:9000"
     aws_access_key_id: str
     aws_secret_access_key: str
+    s3_bucket: str = "static"
 
     # lms settings
     lms_base_url: str

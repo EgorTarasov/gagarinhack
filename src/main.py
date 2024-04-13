@@ -2,17 +2,19 @@ import logging
 from typing import AsyncGenerator
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from config import cfg
 from data import db
 
-from worker import celery_client
 from auth.router import router as auth_router
 from timetable.router import router as timetable_router
 from news.router import router as news_router
+from achievements.router import router as achievements_router
+
 from chat.router import router as chat_router
-from fastapi.middleware.cors import CORSMiddleware
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
@@ -50,6 +52,8 @@ def create_app() -> FastAPI:
     new_app.include_router(timetable_router)
     new_app.include_router(news_router)
     new_app.include_router(chat_router)
+    new_app.include_router(achievements_router)
+
 
     return new_app
 

@@ -47,14 +47,11 @@ services:
       - 'redis-data:/root/redis'
     env_file:
       - .env
+
   search-engine:
     build:
       context: ./src/ml
       dockerfile: Dockerfile
-    environment:
-      - 'PG_CONN_STR=""'
-      - 'MONGO_CONN_STR=""'
-      - 'OLLAMA_API=""'
     restart: always
     volumes:
       - 'models-cache:/root/.cache/huggingface/hub/'
@@ -63,3 +60,22 @@ services:
     command:
       - python3
       - server.py
+
+
+#  minio:
+#    image: minio/minio:latest
+#    command: server --console-address ":9001" /data/
+#    ports:
+#      - "9001:9001"
+#      - "9002:9002"
+#    environment:
+#      MINIO_ROOT_USER: ozontech
+#      MINIO_ROOT_PASSWORD: minio123
+#    volumes:
+#      - minio-storage:/data
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:9001/minio/health/live"]
+#      interval: 30s
+#      timeout: 20s
+#      retries: 3
+
