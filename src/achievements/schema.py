@@ -1,11 +1,10 @@
 import datetime
-from enum import StrEnum
+from enum import Enum
 
-from fastapi import UploadFile
 from pydantic import BaseModel, Field, ConfigDict
 
 
-class AchievementTypeDto(StrEnum):
+class AchievementTypeDto(str, Enum):
     EDUCATION = "Обучение"
     CREATIVITY = "Творчество"
     SOCIAL = "Общ. деятельность"

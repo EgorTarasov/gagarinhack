@@ -4,10 +4,13 @@ from fastapi.security import OAuth2PasswordRequestForm
 from asyncpg.pool import PoolConnectionProxy
 from redis import Redis
 
-from . import schema
+from utils import UserTokenData
+from . import schema, crud
 from . import service
 
 from data import get_connection, get_redis
+from .dependency import get_current_user
+from .models import UserDao
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -73,3 +76,12 @@ async def auth_vk(
         return schema.Token(access_token=token)
     except Exception as e:
         return {"detail": str(e)}
+
+
+@router.get("/me", response_model=UserDao)
+async def get_me(
+    db_conn: PoolConnectionProxy = Depends(get_connection),
+    user: UserTokenData = Depends(get_current_user),
+):
+    user = await crud.get_by_id(db_conn, user.user_id)
+    return user
