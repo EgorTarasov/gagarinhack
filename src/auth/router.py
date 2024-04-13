@@ -12,26 +12,28 @@ from data import get_connection, get_redis
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-@router.post("/login")
+@router.post("/login", response_model=schema.Token)
 async def login(
     db: PoolConnectionProxy = Depends(get_connection),
     form_data: OAuth2PasswordRequestForm = Depends(),
 ):
     # TODO: valid err codes
     try:
-        return await service.login(db, form_data.username, form_data.password)
+        token = await service.login(db, form_data.username, form_data.password)
+        return schema.Token(access_token=token)
     except ValueError as e:
         return {"detail": str(e)}
 
 
-@router.post("/register")
+@router.post("/register", response_model=schema.Token)
 async def register(
     user: schema.UserCreate,
     db: PoolConnectionProxy = Depends(get_connection),
 ):
     # TODO: valid err codes
     try:
-        return await service.register(db, user)
+        token = await service.register(db, user)
+        return schema.Token(access_token=token)
     except ValueError as e:
         logging.error(e)
         return Response(status_code=400, content={"detail": str(e)})

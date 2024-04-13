@@ -19,8 +19,7 @@ async def login(
     if data is None:
         raise ValueError("User not found")
     _id, hashed_password = data
-    print(_id, hashed_password)
-    print(password, hashed_password)
+
     if not PasswordManager.verify_password(password, hashed_password):
         raise ValueError("Invalid password")
 
