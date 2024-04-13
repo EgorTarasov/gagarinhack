@@ -1,13 +1,13 @@
 import { Button, Logo } from "@/ui";
 import { Input } from "@/ui/Input";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { AuthService } from "@/stores/auth.service.ts";
 import { AuthDto } from "api/models/auth.model.ts";
 import { Link, useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { MOCK_USER } from "@/constants/mocks";
 import { PasswordField } from "@/components/fields/PasswordField";
-import { TLoginButton, TLoginButtonSize, TUser } from "react-telegram-auth";
+import { VKButton } from "@/components/buttons/VkLoginButton";
 
 export const Login = observer(() => {
   const navigate = useNavigate();
@@ -34,19 +34,6 @@ export const Login = observer(() => {
     }
   };
 
-  const handleTelegramLogin = async (user: TUser) => {
-    setIsLoading(true);
-    setShowError(false);
-    try {
-      const isSuccess = await AuthService.loginWithTelegram(user);
-      if (isSuccess) {
-        navigate("/");
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handlePasswordChange = (value: string) => {
     setAuthData({ ...authData, password: value });
   };
@@ -58,6 +45,19 @@ export const Login = observer(() => {
   const fillTestData = () => {
     setAuthData(MOCK_USER);
   };
+
+  useEffect(() => {
+    const vkLoginCode = new URLSearchParams(window.location.search).get("code");
+    if (vkLoginCode) {
+      setIsLoading(true);
+      AuthService.loginVk(vkLoginCode).then((isSuccess) => {
+        if (isSuccess) {
+          navigate("/");
+        }
+        setIsLoading(false);
+      });
+    }
+  }, [navigate]);
 
   return (
     <div className={"w-full h-full flex items-center justify-center bg-white"}>
@@ -122,15 +122,7 @@ export const Login = observer(() => {
           </Button>
         </form>
         <div className="h-4" />
-        <TLoginButton
-          botName="discrete_third_bot"
-          buttonSize={TLoginButtonSize.Large}
-          lang="ru"
-          usePic={false}
-          cornerRadius={8}
-          requestAccess="write"
-          onAuthCallback={handleTelegramLogin}
-        />
+        <VKButton />
       </div>
     </div>
   );

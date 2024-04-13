@@ -11,6 +11,7 @@ import { OnboardingPage } from "../pages/onboarding/onboarding.page.tsx";
 import { MainPage } from "../pages/main/main.page.tsx";
 import { Login } from "../pages/login/Login.tsx";
 import { ResetPassword } from "../pages/reset-password/ResetPassword.tsx";
+import { AssistantPage } from "../pages/assistant/assistant.page.tsx";
 
 export interface RouteType {
   path: string;
@@ -31,6 +32,15 @@ const userRoutes: RouteType[] = [
     ),
     title: "Главная",
     showInNav: true
+  },
+  {
+    path: "/assistant",
+    component: () => (
+      <PrivateRoute>
+        <AssistantPage />
+      </PrivateRoute>
+    ),
+    title: "Ассистент"
   },
   {
     path: "/me",

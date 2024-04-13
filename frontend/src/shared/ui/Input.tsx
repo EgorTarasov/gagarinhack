@@ -61,7 +61,6 @@ export const Input: React.FC<InputProps> = ({
       )}
       {rightIcon && !allowClear && (
         <button
-          type="button"
           onClick={onIconClick}
           aria-hidden={onIconClick ? undefined : true}
           aria-label="Отправить значение поля"

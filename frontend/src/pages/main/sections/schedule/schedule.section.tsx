@@ -4,6 +4,7 @@ import { FCVM } from "@/utils/fcvm";
 import { IconButton, Separator } from "@/ui";
 import { useId } from "react";
 import ChevronIcon from "@/assets/chevron2.svg";
+import { TaskCard } from "@/components/cards/task.card";
 
 export const ScheduleSection: FCVM<MainPageViewModel> = observer(({ vm }) => {
   const leftControlId = useId();
@@ -26,6 +27,20 @@ export const ScheduleSection: FCVM<MainPageViewModel> = observer(({ vm }) => {
         </div>
       </div>
       <Separator className="my-2" />
+      <ul className="">
+        {/* {
+          vm.schedule.map((item, index) => (
+            <TaskCard key={index} {...item} />
+          ))
+        } */}
+        <TaskCard
+          isCompleted={false}
+          schedule="12:00"
+          title="Математика"
+          location="Корпус 1"
+          lessonType="Лекция"
+        />
+      </ul>
     </section>
   );
 });

@@ -71,9 +71,9 @@ class AuthServiceViewModel {
     return false;
   }
 
-  public async loginWithTelegram(user: TUser): Promise<boolean> {
+  public async loginVk(code: string): Promise<boolean> {
     try {
-      const auth = await AuthEndpoint.loginWithTelegram(user);
+      const auth = await AuthEndpoint.loginVk(code);
       if (auth) {
         const user = await UserEndpoint.current();
         this.auth = {

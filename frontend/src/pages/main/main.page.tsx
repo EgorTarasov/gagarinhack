@@ -22,7 +22,6 @@ export const MainPage = observer(() => {
           </div>
           <div className={card}>
             <ScheduleSection vm={vm} />
-            hu
           </div>
           <div className={card}>
             <DiveinSection vm={vm} />

@@ -26,4 +26,11 @@ export namespace AuthEndpoint {
     setStoredAuthToken(result);
     return parseJwt<AuthDto.Item>(result);
   };
+
+  export const loginVk = async (code: string) => {
+    const result = await api.post<AuthDto.Result>("/api/auth/add/vk", { code });
+
+    setStoredAuthToken(result.access_token);
+    return parseJwt<AuthDto.Item>(result.access_token);
+  };
 }
