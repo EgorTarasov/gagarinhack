@@ -1,5 +1,5 @@
 import logging
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends, Response, Query
 from fastapi.security import OAuth2PasswordRequestForm
 from asyncpg.pool import PoolConnectionProxy
 from redis import Redis
@@ -61,3 +61,15 @@ async def password_code(
 @router.get("/password-reset")
 async def password_reset():
     return {"message": "Password Reset"}
+
+
+@router.post("/vk")
+async def auth_vk(
+    code: str = Query(..., description="код авторизации"),
+    db_conn: PoolConnectionProxy = Depends(get_connection),
+):
+    try:
+        token = await service.auth_vk(db_conn, code)
+        return schema.Token(access_token=token)
+    except Exception as e:
+        return {"detail": str(e)}
