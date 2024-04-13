@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from asyncpg.pool import PoolConnectionProxy
 from redis import Redis
 
-from auth import schema
+from . import schema
 from . import service
 
 from data import get_connection, get_redis

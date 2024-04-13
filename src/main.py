@@ -6,8 +6,12 @@ from contextlib import asynccontextmanager
 
 from config import cfg
 from data import db
+
+from worker import celery_client
 from auth.router import router as auth_router
+from timetable.router import router as timetable_router
 from news.router import router as news_router
+
 
 
 @asynccontextmanager
@@ -28,8 +32,11 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
     logging.basicConfig(level=logging.DEBUG)
+    
     new_app.include_router(auth_router)
+    new_app.include_router(timetable_router)
     new_app.include_router(news_router)
+
     return new_app
 
 

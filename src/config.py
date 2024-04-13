@@ -11,6 +11,7 @@ class Config(BaseSettings):
     app_desc: str = "FastAPI App Description"
     app_version: str = "0.1.0"
     debug: bool = False
+    logging_level: str = "info"
 
     max_upload_size: int = 5 * 1024 * 1024  # 5MB
 
@@ -45,6 +46,10 @@ class Config(BaseSettings):
     aws_access_key_id: str
     aws_secret_access_key: str
 
+    # lms settings
+    lms_base_url: str
+    lms_timetable_path: str
+
     @property
     def build_postgres_dsn(self) -> str:
         res = (
@@ -62,4 +67,3 @@ class Config(BaseSettings):
 
 
 cfg = Config()  # type: ignore
-print(cfg.build_postgres_dsn)
