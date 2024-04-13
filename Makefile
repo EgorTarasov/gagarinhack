@@ -18,6 +18,7 @@ pip-prod:
 .PHONY: run-in-docker
 run-in-docker:
 	docker-compose up -d --build
+
 .PHONY: proto-py
 proto-py:
 	python -m grpc_tools.protoc -Iproto --python_out=src/grpc --pyi_out=src/grpc --grpc_python_out=src/grpc proto/search.proto
