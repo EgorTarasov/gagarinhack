@@ -1,0 +1,8 @@
+scikit-learn
+numpy
+clickhouse_driver
+psycopg2-binary
+transformers
+torch
+grpcio
+grpcio-tools

@@ -19,6 +19,7 @@ async def get():
     return HTMLResponse(html)
 
 
+# TODO: auth for websocket
 @router.websocket("/ws/{chat_id}")
 async def websocket_endpoint(
         websocket: WebSocket,
@@ -26,7 +27,10 @@ async def websocket_endpoint(
         ml_client: client.MLClient = Depends(client.get_ml_service),
         db: PoolConnectionProxy = Depends(get_connection),
 ):
+    # TODO: fixme load previous msg via ws
     user_id = 2
+
+
     chat_id = await service.save_chat(db, user_id, chat_id)
     await websocket.accept()
     while True:

@@ -16,7 +16,6 @@ class Ollama:
         self.client = Client(host=uri)
         self.tokenizer = AutoTokenizer.from_pretrained("Tochka-AI/ruRoPEBert-e5-base-2k")
         prompt_in_chat_format = [
-
             {
                 "role": "user",
                 "content": """Context:
@@ -37,7 +36,6 @@ class Ollama:
     prompt_in_chat_format, tokenize=False, add_generation_prompt=True
         )
 
-
     def _get_prompt(self, query: str, docs: list[Document]) -> str:
         print(docs[0])
         context = "".join([f"Document {str(i)}:::\n" + doc.text for i, doc in enumerate(docs)])
@@ -53,7 +51,7 @@ class Ollama:
             options={"temperature": 0},
         )
 
-        return response["message"]["content"], "Ссылки:" + "\n".join([doc.metadata for doc in docs])  # type: ignore
+        return response["message"]["content"], "\n".join([doc.metadata for doc in docs])  # type: ignore
 
     def get_stream_response(
         self, query: str, docs: list[Document]
