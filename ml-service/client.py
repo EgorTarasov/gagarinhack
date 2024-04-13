@@ -22,7 +22,7 @@ class MLClient:
     def stream_response(self, query: str):
         request = self.__build_request(query)
         for response in self.stub.RespondStream(request):
-            yield response.body
+            yield response
 
 
 ml_client = MLClient(cfg.search_engine_uri)

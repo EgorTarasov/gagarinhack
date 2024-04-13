@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import search_pb2 as search__pb2
+import search_engine_pb2 as search__engine__pb2
 
 
 class SearchEngineStub(object):
@@ -16,13 +16,13 @@ class SearchEngineStub(object):
         """
         self.Respond = channel.unary_unary(
                 '/search_engine.SearchEngine/Respond',
-                request_serializer=search__pb2.Query.SerializeToString,
-                response_deserializer=search__pb2.Response.FromString,
+                request_serializer=search__engine__pb2.Query.SerializeToString,
+                response_deserializer=search__engine__pb2.Response.FromString,
                 )
         self.RespondStream = channel.unary_stream(
                 '/search_engine.SearchEngine/RespondStream',
-                request_serializer=search__pb2.Query.SerializeToString,
-                response_deserializer=search__pb2.Response.FromString,
+                request_serializer=search__engine__pb2.Query.SerializeToString,
+                response_deserializer=search__engine__pb2.Response.FromString,
                 )
 
 
@@ -46,13 +46,13 @@ def add_SearchEngineServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'Respond': grpc.unary_unary_rpc_method_handler(
                     servicer.Respond,
-                    request_deserializer=search__pb2.Query.FromString,
-                    response_serializer=search__pb2.Response.SerializeToString,
+                    request_deserializer=search__engine__pb2.Query.FromString,
+                    response_serializer=search__engine__pb2.Response.SerializeToString,
             ),
             'RespondStream': grpc.unary_stream_rpc_method_handler(
                     servicer.RespondStream,
-                    request_deserializer=search__pb2.Query.FromString,
-                    response_serializer=search__pb2.Response.SerializeToString,
+                    request_deserializer=search__engine__pb2.Query.FromString,
+                    response_serializer=search__engine__pb2.Response.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -76,8 +76,8 @@ class SearchEngine(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/search_engine.SearchEngine/Respond',
-            search__pb2.Query.SerializeToString,
-            search__pb2.Response.FromString,
+            search__engine__pb2.Query.SerializeToString,
+            search__engine__pb2.Response.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -93,7 +93,7 @@ class SearchEngine(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_stream(request, target, '/search_engine.SearchEngine/RespondStream',
-            search__pb2.Query.SerializeToString,
-            search__pb2.Response.FromString,
+            search__engine__pb2.Query.SerializeToString,
+            search__engine__pb2.Response.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
