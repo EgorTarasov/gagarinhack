@@ -50,6 +50,7 @@ class Config(BaseSettings):
     # lms settings
     lms_base_url: str
     lms_timetable_path: str
+    yandex_maps_key: str
 
     # vk
     vk_client_id: str
