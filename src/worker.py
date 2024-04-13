@@ -1,7 +1,7 @@
 from celery import Celery
 from config import Config
 from utils.email import EmailClient
-import telegram as telegram_client
+# from telegram import bot
 
 
 # FIXME: worker invalid config
@@ -36,9 +36,9 @@ def send_email_recovery_code(
     email_client.send_mailing(email, subject, template, data)
 
 
-@celery_client.task
-def send_telegram_notification(
-    user_id: int,
-    msg: str,
-) -> None:
-    telegram_client.send_notification(user_id, msg)
+# @celery_client.task
+# def send_telegram_notification(
+#     user_id: int,
+#     msg: str,
+# ) -> None:
+#     bot.send_notification(user_id, msg)

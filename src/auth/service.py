@@ -1,7 +1,7 @@
 import asyncio
 
 from asyncpg.pool import PoolConnectionProxy
-from worker import send_email_recovery_code, send_telegram_notification
+from worker import send_email_recovery_code
 from config import cfg
 import requests
 from utils.password import PasswordManager
@@ -16,9 +16,9 @@ from .exeptions import UserNotFoundException
 
 
 async def login(
-        db_conn: PoolConnectionProxy,
-        email: str,
-        password: str,
+    db_conn: PoolConnectionProxy,
+    email: str,
+    password: str,
 ) -> str:
     """Авторизация пользователя
     Returns:
@@ -36,6 +36,8 @@ async def login(
 
 
 async def register(db_conn: PoolConnectionProxy, user: schema.UserCreate) -> str:
+    if user.email is None:
+        raise ValueError("empty email")
     data = await crud.get_by_email(db_conn, user.email)
 
     if data is not None:
@@ -63,16 +65,17 @@ async def send_password_code(db_conn: PoolConnectionProxy, redis, email: str) ->
 
 
 async def send_notification(user_id: int, msg: str) -> None:
-    send_telegram_notification.delay(user_id, msg)
+    print("sending telegram notification to user", user_id, msg)
+    # send_telegram_notification.delay(user_id, msg)
 
 
 async def auth_vk(db_conn: PoolConnectionProxy, code: str) -> str:
     # Checks vk auth
     url = cfg.vk_token_url.format(
-            client_id=cfg.vk_client_id,
-            vk_secure_token=cfg.vk_secure_token,
-            redirect_uri=cfg.vk_redirect_uri,
-            code=code,
+        client_id=cfg.vk_client_id,
+        vk_secure_token=cfg.vk_secure_token,
+        redirect_uri=cfg.vk_redirect_uri,
+        code=code,
     )
     response = requests.get(url)
 
@@ -90,9 +93,9 @@ async def auth_vk(db_conn: PoolConnectionProxy, code: str) -> str:
     # If we don't have data read it from vk
     if user_data is None:
         response = requests.get(
-                cfg.vk_base_url + "/users.get",
-                headers={"Authorization": f"Bearer {access_token}"},
-                params={"fields": "photo_200, sex, city, bdate, schools", "v": "5.199"},
+            cfg.vk_base_url + "/users.get",
+            headers={"Authorization": f"Bearer {access_token}"},
+            params={"fields": "photo_200, sex, city, bdate, schools", "v": "5.199"},
         )
 
         user_info: dict[str, Any] = response.json()["response"][0]
@@ -110,9 +113,9 @@ async def auth_vk(db_conn: PoolConnectionProxy, code: str) -> str:
 
         if "sex" in user_info.keys():
             """
-                1 — женский;
-                2 — мужской;
-                0 — пол не указан.
+            1 — женский;
+            2 — мужской;
+            0 — пол не указан.
             """
             if user_info["sex"] == 1:
                 sex = "женский"
@@ -123,15 +126,15 @@ async def auth_vk(db_conn: PoolConnectionProxy, code: str) -> str:
         else:
             sex = "пол не указан"
         user_data = models.VkUserDao(
-                id=user_id,
-                first_name=user_info["first_name"],
-                last_name=user_info["last_name"],
-                photo_url=user_info["photo_200"],
-                created_at=datetime.now(),
-                updated_at=datetime.now(),
-                sex=sex,
-                bdate=bdate,
-                city=city,
+            id=user_id,
+            first_name=user_info["first_name"],
+            last_name=user_info["last_name"],
+            photo_url=user_info["photo_200"],
+            created_at=datetime.now(),
+            updated_at=datetime.now(),
+            sex=sex,
+            bdate=bdate,
+            city=city,
         )
         new_id = await crud.create_vk_user(db_conn, user_data)
         if new_id is None:
@@ -144,12 +147,14 @@ async def auth_vk(db_conn: PoolConnectionProxy, code: str) -> str:
     return JWTEncoder.create_access_token(user_id)
 
 
-async def parse_vk(db: PoolConnectionProxy, access_token: str, user_data: models.VkUserDao):
+async def parse_vk(
+    db: PoolConnectionProxy, access_token: str, user_data: models.VkUserDao
+):
     # TODO: add embedings to groups
     response = requests.get(
-            cfg.vk_base_url + "/groups.get",
-            headers={"Authorization": f"Bearer {access_token}"},
-            params={"v": "5.199"},
+        cfg.vk_base_url + "/groups.get",
+        headers={"Authorization": f"Bearer {access_token}"},
+        params={"v": "5.199"},
     )
 
     old_groups = await crud.select_groups(db, response.json()["response"]["items"])
@@ -157,13 +162,13 @@ async def parse_vk(db: PoolConnectionProxy, access_token: str, user_data: models
     db_groups: dict[int, models.VkGroupDao] = {gr.id: gr for gr in old_groups}
 
     response = requests.get(
-            cfg.vk_base_url + "/groups.getById",
-            headers={"Authorization": f"Bearer {cfg.vk_service_token}"},
-            params={
-                "group_ids": ",".join(map(str, response.json()["response"]["items"])),
-                "fields":    "photo_200,description",
-                "v":         "5.199",
-            },
+        cfg.vk_base_url + "/groups.getById",
+        headers={"Authorization": f"Bearer {cfg.vk_service_token}"},
+        params={
+            "group_ids": ",".join(map(str, response.json()["response"]["items"])),
+            "fields": "photo_200,description",
+            "v": "5.199",
+        },
     )
 
     new_groups: list[models.VkGroupDao] = []
@@ -176,21 +181,30 @@ async def parse_vk(db: PoolConnectionProxy, access_token: str, user_data: models
             db_groups[group_id].type = group_info["type"]
 
         else:
-            new_groups.append(
+            try:
+                new_groups.append(
                     models.VkGroupDao(
                         id=group_info["id"],
                         name=group_info["name"],
                         screen_name=group_info["screen_name"],
-                        description=group_info["description"],
+                        description=(
+                            group_info["description"]
+                            if "description" in group_info.keys()
+                            else ""
+                        ),
                         type=group_info["type"],
                         photo_200=group_info["photo_200"],
                         created_at=datetime.now(),
                         updated_at=datetime.now(),
                     )
-            )
+                )
+            except Exception as e:
+                log.error(f"failed to create VkGroupDao: {e}")
+                log.error(group_info)
 
     await asyncio.create_task(crud.create_vk_groups(db, new_groups))
-    await asyncio.create_task(crud.assign_groups_to_user(db, user_data.id, groups_ids=[
-        obj.id for obj in new_groups
-    ]))
-
+    await asyncio.create_task(
+        crud.assign_groups_to_user(
+            db, user_data.id, groups_ids=[obj.id for obj in new_groups]
+        )
+    )

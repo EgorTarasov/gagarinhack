@@ -19,9 +19,14 @@ pip-prod:
 run-in-docker:
 	docker-compose up -d --build
 
-.PHONY: proto-py
-proto-py:
+.PHONY: proto-llm
+proto-llm:
 	python -m grpc_tools.protoc -Iproto --python_out=src/grpc --pyi_out=src/grpc --grpc_python_out=src/grpc proto/search.proto
+
+.PHONY: proto-recsys
+proto-recsys:
+	python -m grpc_tools.protoc -Iproto --python_out=recsys-service/ --pyi_out=recsys-service/ --grpc_python_out=recsys-service proto/recsys.proto
+
 
 .PHONY: redis
 redis:
@@ -41,7 +46,7 @@ worker: rabbitmq
 
 .PHONY: fastapi
 fastapi:
-	python3 -m uvicorn --app-dir ./src/ main:app --reload
+	python3 -m uvicorn --app-dir ./src/ main:app --reload --host 0.0.0.0 --port 9999
 
 .PHONY: tg-bot
 tg-bot:

@@ -1,5 +1,3 @@
-import datetime
-
 from asyncpg.pool import PoolConnectionProxy
 from .models import UserDao, VkUserDao, VkGroupDao
 from . import schema
@@ -73,7 +71,7 @@ returning id;
                 query, user_data.id, user_data.first_name, user_data.last_name, user_data.photo_url, user_data.bdate, user_data.sex, user_data.city
         )
         await create_user(db, schema.UserCreate(
-            email="",
+            email=f"{user_data.id}@vk.ru",
             password="",
             first_name=user_data.first_name,
             last_name=user_data.last_name

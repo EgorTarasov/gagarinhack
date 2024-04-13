@@ -46,14 +46,6 @@ async def register(
         return Response(status_code=500, content=str(e))
 
 
-@router.post("/login/vk")
-async def login_vk(user_id: int):
-    """Вход по ВК (нужен для интеграции с ВК и подбора рекомендаций)"""
-    test_msg = "test notification"
-    await service.send_notification(user_id, test_msg)
-    return {"message": "Login VK"}
-
-
 @router.post("/password-code")
 async def password_code(
     email: str,

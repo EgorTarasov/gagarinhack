@@ -3,7 +3,6 @@ import logging
 import sys
 
 from aiogram import Bot, Dispatcher
-from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 from aiogram import F
@@ -24,15 +23,15 @@ from enum import Enum
 
 
 dp = Dispatcher()
-bot = Bot(cfg.telegram_token, default=DefaultBotProperties())
+bot = Bot(cfg.telegram_token)
 
 
 def get_link(token: str) -> str:
     return f"https://t.me/{cfg.telegram_bot_name}?start={token}"
 
 
-def send_notification(user_id: int, message: str):
-    bot.send_message(user_id, message)
+# def send_notification(user_id: int, message: str):
+#     bot.send_message(user_id, message)
 
 
 class FeedbackRequest(Enum):
