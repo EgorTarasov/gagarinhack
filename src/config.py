@@ -14,6 +14,7 @@ class Config(BaseSettings):
     logging_level: str = "info"
 
     search_engine_uri: str = "localhost:10000"
+    recsys_engine_uri: str = "localhost:10001"
 
     max_upload_size: int = 5 * 1024 * 1024  # 5MB
 
@@ -60,7 +61,9 @@ class Config(BaseSettings):
     vk_service_token: str
     vk_redirect_uri: str = "http://localhost:5173/login"
 
-    vk_token_url: str = "https://oauth.vk.com/access_token?client_id={client_id}&client_secret={vk_secure_token}&redirect_uri={redirect_uri}&code={code}"
+    vk_token_url: str = (
+        "https://oauth.vk.com/access_token?client_id={client_id}&client_secret={vk_secure_token}&redirect_uri={redirect_uri}&code={code}"
+    )
     vk_base_url: str = "https://api.vk.ru/method"
 
     @property

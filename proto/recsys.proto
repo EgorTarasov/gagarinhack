@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package recsys_engine;
+
+message CommunitiesRequest{
+    repeated int64 ids = 1;
+    int32 k = 2;
+}
+
+message Community{
+    string name = 1;
+    double score = 2;
+}
+
+message CommunitiesResponse{
+    repeated Community communities = 1;
+}
+
+service RecSysEngine {
+    rpc Communities(CommunitiesRequest) returns (CommunitiesResponse);
+}
