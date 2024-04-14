@@ -27,7 +27,7 @@ export const ScheduleSection: FCVM<MainPageViewModel> = observer(({ vm }) => {
         </div>
       </div>
       <Separator className="my-2" />
-      <ul className="">
+      <ul>
         {/* {
           vm.schedule.map((item, index) => (
             <TaskCard key={index} {...item} />
@@ -55,6 +55,14 @@ export const ScheduleSection: FCVM<MainPageViewModel> = observer(({ vm }) => {
           lessonType="Лекция"
         />
       </ul>
+
+      <a
+        className="ml-auto text-[#2c56deae] underline underline-offset-8"
+        href={`${import.meta.env.VITE_API_URL}/timetable/get?group=me`}
+        target="_blank"
+        rel="noreferrer">
+        Добавить в мой календарь
+      </a>
     </section>
   );
 });
