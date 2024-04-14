@@ -35,12 +35,12 @@ class MLservice:
 
     def get_response(self, query: str) -> tuple[str, str]:
         """return response and context from ollama model"""
-        docs = self.store.search_similarity(query, k=3)
+        docs = self.store.search_similarity(query, k=1)
         return self.ollama.get_response(query, docs)
 
     def get_stream_response(self, query: str) -> Generator[str, Any, None]:
         """return response and context from ollama model"""
-        docs = self.store.search_similarity(query, 3)
+        docs = self.store.search_similarity(query, 1)
         for chunk in self.ollama.get_stream_response(query, docs):
             yield chunk["message"]["content"]  # type: ignore
         yield "Ссылки:" + "\n".join([doc.metadata for doc in docs])

@@ -41,7 +41,9 @@ async def register(db_conn: PoolConnectionProxy, user: schema.UserCreate) -> str
     data = await crud.get_by_email(db_conn, user.email)
 
     if data is not None:
-        raise UserNotFoundException(f"Пользователь с почтой {user.email} уже существует")
+        raise UserNotFoundException(
+            f"Пользователь с почтой {user.email} уже существует"
+        )
 
     user.password = PasswordManager.hash_password(user.password)
 

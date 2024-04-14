@@ -10,13 +10,14 @@ recsys.main(vk_group_ids)
 
 """
 
+import json
 from concurrent import futures
 import logging
 from recsys import Recsys
 from recsys_pb2 import CommunitiesRequest, CommunitiesResponse, Community
 from recsys_pb2_grpc import (
     RecSysEngine,
-    RecSysEngineStub,w
+    RecSysEngineStub,
     add_RecSysEngineServicer_to_server,
 )
 from grpc import ServicerContext, server
@@ -37,7 +38,6 @@ class RecSysServicer(RecSysEngine):
         print(type(request.ids))
         group_ids = [i for i in request.ids]
         communities = self.recsys.main(group_ids)
-
         response = CommunitiesResponse(
             communities=[
                 Community(name=str(title), score=float(similarity))
@@ -49,20 +49,11 @@ class RecSysServicer(RecSysEngine):
 
 def serve():
     # FIXME: use environment variables
-    db_params = {
-        "dbname": "gagarin",
-        "user": "misos",
-        "password": "V9NZ0ShiI895xE178nJfMfhsfo4e349dT",
-        "host": "larek.tech",
-        "port": 25000,
-    }
-    ch_params = {
-        "host": "larek.tech",
-        "port": 26000,
-        "user": "testuser",
-        "password": "superstrongpassword",
-        "database": "default",
-    }
+    with open("db.json", "r") as f:
+        db_params = json.load(f)
+
+    with open("ch.json", "r") as f:
+        ch_params = json.load(f)
 
     s = server(futures.ThreadPoolExecutor(max_workers=10))
     recsys = Recsys(
