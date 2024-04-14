@@ -33,7 +33,7 @@ export const CommunitiesSection: FCVM<MainPageViewModel> = observer(({ vm }) => 
 
   return (
     <section className="flex flex-col">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center gap-1">
         <h2 className="font-medium text-xl px-2 py-2">Рекомендованные сообщества</h2>
         <div className="flex gap-2 h-8">
           <IconButton id={leftControlId} icon={() => <ChevronIcon className="rotate-180" />} />
