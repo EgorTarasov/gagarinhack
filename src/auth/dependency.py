@@ -21,3 +21,12 @@ async def get_current_user(access_token: str = Depends(oauth2_scheme)) -> UserTo
     except Exception as e:
         logging.error(e)
         raise credentials_exception
+
+
+# async def get_recommendations(user: str = Depends(get_current_user)) -> UserTokenData:
+#     # TODO: verify token
+#     try:
+#         return JWTEncoder.decode_access_token(access_token)
+#     except Exception as e:
+#         logging.error(e)
+#         raise credentials_exception

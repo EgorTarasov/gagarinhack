@@ -1,4 +1,4 @@
-from lifespan import InvalidDataException
+from exception import InvalidDataException
 
 
 class InvalidCredentialsException(InvalidDataException):

@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import recsys_pb2 as recsys__pb2
+from . import recsys_pb2 as recsys__pb2
 
 
 class RecSysEngineStub(object):

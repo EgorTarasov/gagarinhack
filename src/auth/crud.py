@@ -26,7 +26,7 @@ async def get_by_email(db: PoolConnectionProxy, email: str) -> UserDao | None:
 
 
 async def get_by_id(db: PoolConnectionProxy, user_id: int) -> UserDao | None:
-    """Получение пользователя по email"""
+    """Получение пользователя по id"""
     query = 'SELECT id, email, first_name, last_name, created_at, updated_at FROM "users" WHERE id = $1'
     row = await db.fetchrow(query, user_id)
     if row is None:
@@ -149,6 +149,18 @@ where id = any($1::integer[]);
             VkGroupDao(**row)
             for row in results
         ]
+    except Exception as e:
+        log.error("err in select groups")
+        log.error(str(e))
+        return []
+
+
+async def select_user_groups(db: PoolConnectionProxy, user_id: int) -> list[int]:
+    query = '''SELECT vk_group_id from user_group_association where vk_user_id = $1;'''
+    try:
+        results = await db.fetch(query, user_id)
+        print(results)
+        return results
     except Exception as e:
         log.error("err in select groups")
         log.error(str(e))

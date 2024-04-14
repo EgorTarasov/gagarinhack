@@ -15,6 +15,7 @@ from . import schema
 from . import models
 from . import crud
 from .exeptions import UserNotFoundException
+from .models import VkGroupDao
 
 
 async def login(
@@ -204,3 +205,8 @@ async def parse_vk(
             db, user_data.id, groups_ids=[obj.id for obj in new_groups]
         )
     )
+
+
+async def get_vk_groups_ids(db_conn: PoolConnectionProxy, user_id: int) -> list[int]:
+    group_ids = await crud.select_user_groups(db_conn, user_id)
+    return group_ids

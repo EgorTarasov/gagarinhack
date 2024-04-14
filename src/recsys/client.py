@@ -1,6 +1,5 @@
 import grpc
-import recsys_pb2
-import recsys_pb2_grpc
+from . import recsys_pb2, recsys_pb2_grpc
 from config import cfg
 
 
