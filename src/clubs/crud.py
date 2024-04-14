@@ -31,12 +31,22 @@ async def insert_all(db: PoolConnectionProxy, all_news: list[NewsDao]):
 
 
 async def select_user_groups(db: PoolConnectionProxy, user_id: int) -> list[int]:
-    query = """SELECT vk_group_id from user_group_association where vk_user_id = $1;"""
+
+    query = """
+SELECT vk_group_id
+from user_group_association
+where
+vk_user_id = (
+    SELECT
+        CAST(split_part(u.email, '@', 1) as integer)
+    from users u
+    where id = $1
+    );
+"""
     try:
         results: list[Record] = await db.fetch(query, user_id)
-        return [record["vk_group_id"] for record in results]
+        return [record["vk_group_id"] for record in results[:5]]
     except Exception as e:
         log.error("err in select groups")
         log.error(str(e))
         return []
-
