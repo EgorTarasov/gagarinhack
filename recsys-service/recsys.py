@@ -23,8 +23,8 @@ class Recsys:
         test_batch = self.tokenizer.batch_encode_plus(
             text, return_tensors="pt", padding=True
         )
-        self.model.eval()
-        pooled_output = self.model(**test_batch).pooler_output
+        with torch.inference_mode():
+            pooled_output = self.model(**test_batch).pooler_output
         return pooled_output
 
     def find_similar_news(self, embedding, client):

@@ -11,10 +11,11 @@ class Ollama:
         self,
         uri: str = "http://localhost:11434/api/generate",
         template: str | None = None,
-        
     ) -> None:
         self.client = Client(host=uri)
-        self.tokenizer = AutoTokenizer.from_pretrained("Tochka-AI/ruRoPEBert-e5-base-2k")
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            "Tochka-AI/ruRoPEBert-e5-base-2k"
+        )
         prompt_in_chat_format = [
             {
                 "role": "user",
@@ -28,17 +29,19 @@ class Ollama:
                 "role": "assistant",
                 "content": """Ты текстовый помощник компании IThub, тебя зовут Алина, ты будешь отвечать на вопросы абитуриентов. Отвечай только на русском. Если пишешь на другом языке, переводи его на русской.
         Если не знаешь ответа, скажи что не знаешь ответа, не пробуй отвечать.
-        Я дам тебе пять текстов , из которых надо дать ответ на поставленный вопрос.
+        Я дам тебе текст, из которого надо дать ответ на поставленный вопрос.
         и не пиши из какого документа ты что взяла. Ответь в целом по документу""",
-            }
+            },
         ]
         self.RAG_PROMPT_TEMPLATE: str = self.tokenizer.apply_chat_template(
-    prompt_in_chat_format, tokenize=False, add_generation_prompt=True
+            prompt_in_chat_format, tokenize=False, add_generation_prompt=True
         )
 
     def _get_prompt(self, query: str, docs: list[Document]) -> str:
         print(docs[0])
-        context = "".join([f"Document {str(i)}:::\n" + doc.text for i, doc in enumerate(docs)])
+        context = "".join(
+            [f"Document {str(i)}:::\n" + doc.text for i, doc in enumerate(docs)]
+        )
         return self.RAG_PROMPT_TEMPLATE.format(question=query, context=context)
 
     def get_response(self, query: str, docs: list[Document]) -> tuple[str, str]:
@@ -48,7 +51,7 @@ class Ollama:
         response = self.client.chat(
             model="mistral",
             messages=[{"role": "user", "content": prompt}],
-            options={"temperature": 0},
+            options={"temperature": 0.2},
         )
 
         return response["message"]["content"], "\n".join([doc.metadata for doc in docs])  # type: ignore
@@ -60,7 +63,7 @@ class Ollama:
         stream = self.client.chat(
             model="mistral",
             messages=[{"role": "user", "content": prompt}],
-            options={"temperature": 0},
+            options={"temperature": 0.2},
             stream=True,
         )
         return stream
