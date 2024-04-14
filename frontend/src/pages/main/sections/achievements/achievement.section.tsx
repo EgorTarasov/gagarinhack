@@ -96,12 +96,12 @@ export const AchievementSection: FCVM<MainPageViewModel> = observer(({ vm }) => 
         title={vm.selectedAchievement?.title ?? "Хакатон"}
         onCancel={() => (vm.selectedAchievement = null)}
         isOpen={vm.selectedAchievement !== null}>
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 max-h-[650px] overflow-y-auto">
           <TitleText title="Дата участия" text={vm.selectedAchievement?.date ?? ""} />
           <TitleText title="Описание достижения" text={vm.selectedAchievement?.description ?? ""} />
           <TitleText
             title="Ссылка на достижение"
-            text={vm.selectedAchievement?.description ?? "test"}
+            text={vm.selectedAchievement?.event_link ?? "test"}
             asLink
           />
           <button onClick={() => vm.downloadCertificate()} className="text-primary underline w-fit">
