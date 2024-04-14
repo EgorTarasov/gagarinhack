@@ -15,6 +15,13 @@ services:
       - .env
     ports:
       - '9999:8000'
+  telegram:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["python3", "src/telegram.py" ]
+    env_file:
+      - .env
   postgres:
     image: 'pgvector/pgvector:pg15'
     restart: always

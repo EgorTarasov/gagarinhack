@@ -114,10 +114,13 @@ async def command_start_handler(message: Message, command: CommandStart) -> None
     This handler receives messages with `/start` command
     """
     await message.answer(
-        f"Привет студенту ITHub!"
-        f"Наш бот Алина поможет вам найти клубы единомышленников, "
+        f"Привет студенту ITHub! "
+        f"Наш бот Алина поможет выявить ваши потребности, "
         f"а также соберёт от вас обратную связь по процессу адаптации в колледже, которая поможет нам стать лучше."
     )
+    await message.answer(Messages.feedback_first_day("студент ITHub"))
+    await message.answer(Messages.feedback_first_week("студент ITHub"))
+    await message.answer(Messages.feedback_first_month("студент ITHub"))
 
 
 class Survey(StatesGroup):
