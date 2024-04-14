@@ -48,11 +48,11 @@ async def create_user(db: PoolConnectionProxy, user: schema.UserCreate) -> int |
 
 
 async def get_vk_user(db: PoolConnectionProxy, user_id: int) -> None | VkUserDao:
-    query = '''
+    query = """
 SELECT id, first_name, last_name, photo_url, created_at, updated_at, bdate, sex, city 
 from vk_users
 where deleted = false and id = $1;
-'''
+"""
     row = await db.fetchrow(query, user_id)
     if row is None:
         return None
@@ -60,22 +60,32 @@ where deleted = false and id = $1;
 
 
 async def create_vk_user(db: PoolConnectionProxy, user_data: VkUserDao) -> int | None:
-    query = '''
+    query = """
 INSERT INTO vk_users(id, first_name, last_name, photo_url, bdate, sex, city) 
 values 
     ($1, $2, $3, $4, $5, $6, $7)
 returning id;
-    '''
+    """
     try:
         new_id: int = await db.fetchval(
-                query, user_data.id, user_data.first_name, user_data.last_name, user_data.photo_url, user_data.bdate, user_data.sex, user_data.city
+            query,
+            user_data.id,
+            user_data.first_name,
+            user_data.last_name,
+            user_data.photo_url,
+            user_data.bdate,
+            user_data.sex,
+            user_data.city,
         )
-        await create_user(db, schema.UserCreate(
-            email=f"{user_data.id}@vk.ru",
-            password="",
-            first_name=user_data.first_name,
-            last_name=user_data.last_name
-        ))
+        await create_user(
+            db,
+            schema.UserCreate(
+                email=f"{user_data.id}@vk.ru",
+                password="",
+                first_name=user_data.first_name,
+                last_name=user_data.last_name,
+            ),
+        )
         return new_id
     except Exception as e:
         log.error(str(e))
@@ -83,15 +93,20 @@ returning id;
 
 
 async def create_vk_group(db: PoolConnectionProxy, group: VkGroupDao) -> int | None:
-    query = '''
+    query = """
 INSERT INTO vk_groups(id, name, description, type, photo_200)
 values 
     ($1, $2, $3, $4, $5)
 returning id;  
-'''
+"""
     try:
         new_id: int = await db.fetchval(
-                query, group.id, group.name, group.description, group.type, group.photo_200,
+            query,
+            group.id,
+            group.name,
+            group.description,
+            group.type,
+            group.photo_200,
         )
         return new_id
     except Exception as e:
@@ -113,23 +128,24 @@ async def create_vk_groups(db: PoolConnectionProxy, groups: list[VkGroupDao]) ->
     ]
     try:
         await db.copy_records_to_table(
-                table_name="vk_groups",
-                records=records,
-                columns=["id", "name", "type", "photo_200", "description", "screen_name"],
+            table_name="vk_groups",
+            records=records,
+            columns=["id", "name", "type", "photo_200", "description", "screen_name"],
         )
     except Exception as e:
         log.error(f"err in create_vk_groups: {e}")
         return None
 
 
-async def assign_groups_to_user(db: PoolConnectionProxy, user_id: int, groups_ids: list[int]) -> None:
-    records = [
-        (user_id, gr_id)
-        for gr_id in groups_ids
-    ]
+async def assign_groups_to_user(
+    db: PoolConnectionProxy, user_id: int, groups_ids: list[int]
+) -> None:
+    records = [(user_id, gr_id) for gr_id in groups_ids]
     try:
         await db.copy_records_to_table(
-                table_name="user", records=records, columns=["vk_user_id", "vk_group_id"],
+            table_name="user",
+            records=records,
+            columns=["vk_user_id", "vk_group_id"],
         )
     except Exception as e:
         log.error(f"err in select groups: {e}")
@@ -137,30 +153,17 @@ async def assign_groups_to_user(db: PoolConnectionProxy, user_id: int, groups_id
         return None
 
 
-async def select_groups(db: PoolConnectionProxy, ids: list[int]) -> list[VkGroupDao] | None:
-    query = '''
+async def select_groups(
+    db: PoolConnectionProxy, ids: list[int]
+) -> list[VkGroupDao] | None:
+    query = """
 SELECT id, name, description, screen_name, type, photo_200, created_at, updated_at, screen_name 
 from vk_groups 
 where id = any($1::integer[]);
-'''
+"""
     try:
         results = await db.fetch(query, ids)
-        return [
-            VkGroupDao(**row)
-            for row in results
-        ]
-    except Exception as e:
-        log.error("err in select groups")
-        log.error(str(e))
-        return []
-
-
-async def select_user_groups(db: PoolConnectionProxy, user_id: int) -> list[int]:
-    query = '''SELECT vk_group_id from user_group_association where vk_user_id = $1;'''
-    try:
-        results = await db.fetch(query, user_id)
-        print(results)
-        return results
+        return [VkGroupDao(**row) for row in results]
     except Exception as e:
         log.error("err in select groups")
         log.error(str(e))

@@ -16,7 +16,7 @@ from recsys import Recsys
 from recsys_pb2 import CommunitiesRequest, CommunitiesResponse, Community
 from recsys_pb2_grpc import (
     RecSysEngine,
-    RecSysEngineStub,w
+    RecSysEngineStub,
     add_RecSysEngineServicer_to_server,
 )
 from grpc import ServicerContext, server

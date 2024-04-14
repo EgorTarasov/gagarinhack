@@ -10,11 +10,31 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    command: python3 -m uvicorn --app-dir ./src/ main:app --reload --host 0.0.0.0 --port 8000
     restart: always
+    volumes:
+      - 'models-cache:/root/.cache/huggingface/hub/'
     env_file:
       - .env
+    environment:
+      - RECSYS_ENGINE_URI=recsys:10001
+      - SEARCH_ENGINE_URI=search-engine:10000
     ports:
       - '9999:8000'
+
+  worker:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    command: celery -A worker worker --loglevel=info
+    restart: always
+    volumes:
+      - 'models-cache:/root/.cache/huggingface/hub/'
+    env_file:
+      - .env
+    environment:
+      - RECSYS_ENGINE_URI=recsys:10001
+      - SEARCH_ENGINE_URI=search-engine:10000
   telegram:
     build:
       context: .

@@ -66,6 +66,9 @@ class Config(BaseSettings):
     )
     vk_base_url: str = "https://api.vk.ru/method"
 
+    # worker settings
+    clickhouse_uri: str
+
     @property
     def build_postgres_dsn(self) -> str:
         res = (

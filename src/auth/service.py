@@ -3,7 +3,7 @@ import asyncio
 from asyncpg.pool import PoolConnectionProxy
 
 from auth.exeptions import InvalidPassword, NotAuthorized
-from worker import send_email_recovery_code, send_telegram_notification
+from worker import send_email_recovery_code
 from config import cfg
 import requests
 from utils.password import PasswordManager
@@ -16,6 +16,8 @@ from . import models
 from . import crud
 from .exeptions import UserNotFoundException
 from .models import VkGroupDao
+
+from worker import calculate_group_embeddings
 
 
 async def login(
@@ -42,7 +44,9 @@ async def register(db_conn: PoolConnectionProxy, user: schema.UserCreate) -> str
     data = await crud.get_by_email(db_conn, user.email)
 
     if data is not None:
-        raise UserNotFoundException(f"Пользователь с почтой {user.email} уже существует")
+        raise UserNotFoundException(
+            f"Пользователь с почтой {user.email} уже существует"
+        )
 
     user.password = PasswordManager.hash_password(user.password)
     new_id = await crud.create_user(db_conn, user)
@@ -62,17 +66,13 @@ async def send_password_code(db_conn: PoolConnectionProxy, redis, email: str) ->
     return None
 
 
-async def send_notification(user_id: int, msg: str) -> None:
-    send_telegram_notification.delay(user_id, msg)
-
-
 async def auth_vk(db_conn: PoolConnectionProxy, code: str) -> str:
     # Checks vk auth
     url = cfg.vk_token_url.format(
-            client_id=cfg.vk_client_id,
-            vk_secure_token=cfg.vk_secure_token,
-            redirect_uri=cfg.vk_redirect_uri,
-            code=code,
+        client_id=cfg.vk_client_id,
+        vk_secure_token=cfg.vk_secure_token,
+        redirect_uri=cfg.vk_redirect_uri,
+        code=code,
     )
     response = requests.get(url)
 
@@ -179,22 +179,25 @@ async def parse_vk(
 
         else:
             try:
-                new_groups.append(
-                    models.VkGroupDao(
-                        id=group_info["id"],
-                        name=group_info["name"],
-                        screen_name=group_info["screen_name"],
-                        description=(
-                            group_info["description"]
-                            if "description" in group_info.keys()
-                            else ""
-                        ),
-                        type=group_info["type"],
-                        photo_200=group_info["photo_200"],
-                        created_at=datetime.now(),
-                        updated_at=datetime.now(),
-                    )
+                new_group = models.VkGroupDao(
+                    id=group_info["id"],
+                    name=group_info["name"],
+                    screen_name=group_info["screen_name"],
+                    description=(
+                        group_info["description"]
+                        if "description" in group_info.keys()
+                        else ""
+                    ),
+                    type=group_info["type"],
+                    photo_200=group_info["photo_200"],
+                    created_at=datetime.now(),
+                    updated_at=datetime.now(),
                 )
+                new_groups.append(new_group)
+                calculate_group_embeddings.delay(
+                    new_group.id, new_group.name, new_group.description
+                )
+
             except Exception as e:
                 log.error(f"failed to create VkGroupDao: {e}")
                 log.error(group_info)
@@ -205,8 +208,3 @@ async def parse_vk(
             db, user_data.id, groups_ids=[obj.id for obj in new_groups]
         )
     )
-
-
-async def get_vk_groups_ids(db_conn: PoolConnectionProxy, user_id: int) -> list[int]:
-    group_ids = await crud.select_user_groups(db_conn, user_id)
-    return group_ids
