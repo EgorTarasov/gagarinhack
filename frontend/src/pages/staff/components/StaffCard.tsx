@@ -24,7 +24,7 @@ export const StaffCard: React.FC<StaffDto.User> = ({
             {roles.map((role, index) => (
               <>
                 {index !== 0 && <div className="w-1 h-1 bg-primary rounded-full not-sr-only" />}
-                <span key={index} className="text-sm text-primary">
+                <span key={index} className="text-sm text-text-primary/60">
                   {role}
                 </span>
               </>

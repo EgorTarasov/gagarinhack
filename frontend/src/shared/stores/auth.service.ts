@@ -3,6 +3,8 @@ import { UserEndpoint } from "api/endpoints/user.endpoint";
 import { UserDto } from "api/models/user.model";
 import { removeStoredAuthToken } from "api/utils/authToken";
 import { makeAutoObservable } from "mobx";
+import { MainPageStore } from "../../pages/main/main.vm";
+import { AchievementEndpoint } from "api/endpoints/achievement.endpoint";
 
 export type Auth =
   | {
@@ -31,6 +33,9 @@ class AuthServiceViewModel {
         state: "authorized",
         user
       };
+      if (!MainPageStore.achievements.length) {
+        MainPageStore.achievements = await AchievementEndpoint.current(user.id.toString());
+      }
     } catch {
       this.auth = { state: "anonymous" };
     }
@@ -46,6 +51,9 @@ class AuthServiceViewModel {
           state: "authorized",
           user
         };
+        if (!MainPageStore.achievements.length) {
+          MainPageStore.achievements = await AchievementEndpoint.current(user.id.toString());
+        }
         return true;
       }
     } catch {
@@ -63,6 +71,9 @@ class AuthServiceViewModel {
           state: "authorized",
           user
         };
+        if (!MainPageStore.achievements.length) {
+          MainPageStore.achievements = await AchievementEndpoint.current(user.id.toString());
+        }
         return true;
       }
     } catch {
@@ -80,6 +91,9 @@ class AuthServiceViewModel {
           state: "authorized",
           user
         };
+        if (!MainPageStore.achievements.length) {
+          MainPageStore.achievements = await AchievementEndpoint.current(user.id.toString());
+        }
         return true;
       }
     } catch {

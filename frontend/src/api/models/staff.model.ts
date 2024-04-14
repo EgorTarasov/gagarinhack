@@ -1,7 +1,7 @@
 export const MocMembers: StaffDto.User[] = [
   {
     id: "1",
-    roles: ["Дизайнер", "Стажер"],
+    roles: ["Сетевые технологии"],
     fullName: "Иванова Анна Михайловна",
     phone: "+7 (921) 123-45-67",
     email: "ivanova.anna@mail.ru",
@@ -9,7 +9,7 @@ export const MocMembers: StaffDto.User[] = [
   },
   {
     id: "2",
-    roles: ["Дизайнер", "Middle"],
+    roles: ["Теория вероятности"],
     fullName: "Петров Сергей Васильевич",
     phone: "+7 (922) 234-56-78",
     email: "petrov.sergey@mail.ru",
@@ -17,7 +17,7 @@ export const MocMembers: StaffDto.User[] = [
   },
   {
     id: "3",
-    roles: ["Frontend", "Стажер"],
+    roles: ["Дискретная математика"],
     fullName: "Смирнова Ольга Ивановна",
     phone: "+7 (923) 345-67-89",
     email: "smirnova.olga@mail.ru",
@@ -25,7 +25,7 @@ export const MocMembers: StaffDto.User[] = [
   },
   {
     id: "4",
-    roles: ["Backend", "Middle"],
+    roles: ["Информационная безопасность"],
     fullName: "Кузнецова Мария Петровна",
     phone: "+7 (924) 456-78-90",
     email: "kuznetsova.maria@mail.ru",
@@ -36,7 +36,7 @@ export const MocMembers: StaffDto.User[] = [
 export const MocStaff: StaffDto.User[] = [
   {
     id: "5",
-    roles: ["Дизайнер", "Лид"],
+    roles: [],
     fullName: "Соколов Илья Дмитриевич",
     phone: "+7 (925) 567-89-01",
     email: "sokolov.ilya@mail.ru",
@@ -44,7 +44,7 @@ export const MocStaff: StaffDto.User[] = [
   },
   {
     id: "6",
-    roles: ["HR"],
+    roles: [],
     fullName: "Попова Ксения Романовна",
     phone: "+7 (926) 678-90-12",
     email: "popova.ksenia@mail.ru",

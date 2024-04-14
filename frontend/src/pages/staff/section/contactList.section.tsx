@@ -4,7 +4,7 @@ import { StaffCard } from "../components/StaffCard.tsx";
 
 export const ContactListSection = () => {
   return (
-    <Collapsible title={"Моя команда"}>
+    <Collapsible title={"Мои преподаватели"}>
       <div
         className="grid gap-4 px-4 appear"
         style={{
