@@ -5,6 +5,7 @@ import { observer } from "mobx-react-lite";
 import { Input } from "@/ui";
 import SendIcon from "@/assets/send.svg";
 import AssistantIcon from "./assistant.svg";
+import PdfIcon from "./pdf.svg";
 
 export const AssistantPage = observer(() => {
   const location = useLocation();
@@ -44,9 +45,10 @@ export const AssistantPage = observer(() => {
                             <a
                               href={`${import.meta.env.VITE_API_URL}/static/file/${link}`}
                               target="_blank"
-                              className="text-[#2c56de] underline underline-offset-4"
+                              className="text-[#2c56de] underline underline-offset-4 flex gap-1"
                               rel="noreferrer">
                               {link}
+                              <PdfIcon width={18} />
                             </a>
                           )}
                         </li>
