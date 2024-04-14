@@ -4,6 +4,7 @@ import asyncio
 from . import crud
 from uuid import UUID
 from ml.client import MLClient
+from utils.logging import log
 
 
 async def get_response():
@@ -16,13 +17,25 @@ async def save_chat(db: PoolConnectionProxy, user_id: int, chat_id: UUID) -> UUI
     return chat_id
 
 
-async def inference(db: PoolConnectionProxy, ml_service: MLClient, chat_id: UUID, query: MlQuery):
+async def inference(
+    db: PoolConnectionProxy, ml_service: MLClient, chat_id: UUID, query: MlQuery
+):
     response_txt = ""
     metadata = []
     q_id = await crud.save_query(db, chat_id, query.text)
     for msg in ml_service.stream_response(query.text):
-        response_txt += msg
-        yield MlResponse.model_validate({"query_id": q_id, "text": msg, "metadata": ["meta1"]})
-    yield MlResponse.model_validate({"query_id": q_id, "text": "", "metadata": [], "last": True})
+        response_txt += msg.body
+        metadata.append(msg.context)
+        yield MlResponse.model_validate(
+            {"query_id": q_id, "text": msg.body, "metadata": [msg.context]}
+        )
+    log.info(f"finished inference chat_id: {chat_id}")
+    log.info(f"metadata:{' '.join(metadata)}")
 
-    await asyncio.create_task(crud.save_response(db, chat_id, q_id, response_txt, metadata))
+    yield MlResponse.model_validate(
+        {"query_id": q_id, "text": "", "metadata": [msg.context], "last": True}
+    )
+
+    await asyncio.create_task(
+        crud.save_response(db, chat_id, q_id, response_txt, metadata)
+    )

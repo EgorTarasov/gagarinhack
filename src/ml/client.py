@@ -5,6 +5,11 @@ from config import cfg
 from typing import AsyncGenerator, NamedTuple
 
 
+class ResponseChunk(NamedTuple):
+    body: str
+    context: str
+
+
 class MLClient:
     def __init__(self, grpc_endpoint: str):
         channel = grpc.insecure_channel(grpc_endpoint)
@@ -23,7 +28,7 @@ class MLClient:
     def stream_response(self, query: str):
         request = self.__build_request(query)
         for response in self.stub.RespondStream(request):
-            yield response.body
+            yield ResponseChunk(response.body, response.context)
 
 
 ml_client = MLClient(cfg.search_engine_uri)
