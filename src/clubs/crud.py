@@ -39,3 +39,4 @@ async def select_user_groups(db: PoolConnectionProxy, user_id: int) -> list[int]
         log.error("err in select groups")
         log.error(str(e))
         return []
+

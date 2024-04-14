@@ -24,3 +24,7 @@ async def download_achievements(db_conn: PoolConnectionProxy, user_id: int,
 
 async def get_achievement(db_conn: PoolConnectionProxy, achievement_id: int) -> AchievementDto:
     return await crud.get_by_id(db_conn, achievement_id=achievement_id)
+
+
+async def delete_achievement(db_conn: PoolConnectionProxy, achievement_id: int):
+    await crud.delete(db_conn, achievement_id=achievement_id)

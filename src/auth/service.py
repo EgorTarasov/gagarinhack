@@ -2,7 +2,7 @@ import asyncio
 
 from asyncpg.pool import PoolConnectionProxy
 
-from achievements.exeptions import InvalidPassword, NotAuthorized
+from auth.exeptions import InvalidPassword, NotAuthorized
 from worker import send_email_recovery_code
 from config import cfg
 import requests
@@ -64,10 +64,6 @@ async def send_password_code(db_conn: PoolConnectionProxy, redis, email: str) ->
     send_email_recovery_code.delay(email, user.first_name, user.last_name, code)
 
     return None
-
-
-# async def send_notification(user_id: int, msg: str) -> None:
-#     send_telegram_notification.delay(user_id, msg)
 
 
 async def auth_vk(db_conn: PoolConnectionProxy, code: str) -> str:
