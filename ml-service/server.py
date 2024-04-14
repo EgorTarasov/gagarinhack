@@ -28,7 +28,7 @@ class MLservice:
         embedding_model: str = "Tochka-AI/ruRoPEBert-e5-base-2k",
         table_name: str = "subject_embeddings",
     ) -> None:
-        model = SentenceTransformer(embedding_model)
+        model = SentenceTransformer(embedding_model) 
 
         self.store = VectorStore(clickhouse_uri, model, table_name=table_name)
         self.ollama = Ollama(ollama_uri)
