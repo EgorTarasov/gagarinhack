@@ -1,4 +1,4 @@
-import { getClubs } from "api/endpoints/clubs.endpoint";
+import { ClubResult, getClubs } from "api/endpoints/clubs.endpoint";
 import { NewsEndpoint } from "api/endpoints/news.endpoint";
 import { AchievementDto } from "api/models/achievement.model";
 import { NewsDto } from "api/models/news.model";
@@ -6,6 +6,7 @@ import { makeAutoObservable } from "mobx";
 
 export class MainPageViewModel {
   news: NewsDto.Item[] = [];
+  clubs: ClubResult[] = [];
   achievements: AchievementDto.Item[] = [];
   selectedAchievement: AchievementDto.Item | null = null;
   public isLoading = false;
@@ -19,12 +20,10 @@ export class MainPageViewModel {
     if (!this.selectedAchievement) return;
   }
 
-  private async init() {
+  async init() {
     const [newsRes] = await Promise.all([NewsEndpoint.current()]);
     this.news = newsRes;
-    console.log(newsRes);
-    const clubs = await getClubs();
-    console.log(clubs);
+    this.clubs = await getClubs();
     this.isLoading = false;
   }
 }

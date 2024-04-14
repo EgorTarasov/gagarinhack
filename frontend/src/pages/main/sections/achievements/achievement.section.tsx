@@ -98,12 +98,9 @@ export const AchievementSection: FCVM<MainPageViewModel> = observer(({ vm }) => 
         isOpen={vm.selectedAchievement !== null}>
         <div className="flex flex-col gap-3">
           <TitleText title="Дата участия" text={vm.selectedAchievement?.date ?? ""} />
+          <TitleText title="Описание достижения" text={vm.selectedAchievement?.description ?? ""} />
           <TitleText
-            title="Описание мероприятия"
-            text={vm.selectedAchievement?.description ?? ""}
-          />
-          <TitleText
-            title="Ссылка на мероприятие"
+            title="Ссылка на достижение"
             text={vm.selectedAchievement?.description ?? "test"}
             asLink
           />

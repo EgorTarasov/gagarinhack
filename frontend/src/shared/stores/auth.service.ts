@@ -35,6 +35,7 @@ class AuthServiceViewModel {
       };
       if (!MainPageStore.achievements.length) {
         MainPageStore.achievements = await AchievementEndpoint.current(user.id.toString());
+        MainPageStore.init();
       }
     } catch {
       this.auth = { state: "anonymous" };
@@ -53,6 +54,7 @@ class AuthServiceViewModel {
         };
         if (!MainPageStore.achievements.length) {
           MainPageStore.achievements = await AchievementEndpoint.current(user.id.toString());
+          MainPageStore.init();
         }
         return true;
       }
@@ -73,6 +75,7 @@ class AuthServiceViewModel {
         };
         if (!MainPageStore.achievements.length) {
           MainPageStore.achievements = await AchievementEndpoint.current(user.id.toString());
+          MainPageStore.init();
         }
         return true;
       }
@@ -93,6 +96,7 @@ class AuthServiceViewModel {
         };
         if (!MainPageStore.achievements.length) {
           MainPageStore.achievements = await AchievementEndpoint.current(user.id.toString());
+          MainPageStore.init();
         }
         return true;
       }

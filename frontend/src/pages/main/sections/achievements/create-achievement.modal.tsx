@@ -13,7 +13,11 @@ export const CreateAchievementModal: FC<{ vm: MainPageViewModel; onCancel: () =>
 
     const v = vm.template;
     return (
-      <DialogBase title="Новое достижение" isOpen onCancel={x.onCancel} width={550}>
+      <DialogBase
+        title="Новое достижение"
+        isOpen
+        onCancel={() => !vm.loading && x.onCancel()}
+        width={550}>
         <form
           className="flex flex-col gap-5 w-full"
           onSubmit={(e) => {
@@ -29,7 +33,7 @@ export const CreateAchievementModal: FC<{ vm: MainPageViewModel; onCancel: () =>
           <div className="flex gap-5">
             <DropdownMultiple
               value={[v.type]}
-              label="Тип мероприятия"
+              label="Тип достижения"
               onChange={(x) => (v.type = x.at(-1) ?? v.type)}
               render={(x) => x}
               options={["Обучение", "Творчество", "Общ. деятельность", "Спорт"]}
@@ -47,7 +51,7 @@ export const CreateAchievementModal: FC<{ vm: MainPageViewModel; onCancel: () =>
             </div>
           </div>
           <div className="flex flex-col">
-            <p className="text-text-primary/60 mb-2">Описание мероприятия</p>
+            <p className="text-text-primary/60 mb-2">Описание достижения</p>
             <textarea
               id="goal"
               value={v.description}
@@ -57,7 +61,7 @@ export const CreateAchievementModal: FC<{ vm: MainPageViewModel; onCancel: () =>
             />
           </div>
           <Input
-            label="Ссылка на мероприятие"
+            label="Ссылка на достижение"
             value={v.event_link}
             onChange={(vv) => (v.event_link = vv)}
             placeholder="https://example.com"
@@ -78,8 +82,12 @@ export const CreateAchievementModal: FC<{ vm: MainPageViewModel; onCancel: () =>
             />
           </div>
           {vm.file?.name && <p className="text-text-primary">Выбран файл: {vm.file.name}</p>}
-          <Button type="button" appearance="secondary" onClick={() => vm.onSubmit()}>
-            Добавить задание
+          <Button
+            type="button"
+            disabled={vm.loading}
+            appearance="secondary"
+            onClick={() => vm.onSubmit()}>
+            Добавить достижение
           </Button>
         </form>
       </DialogBase>

@@ -16,6 +16,7 @@ export interface RouteType {
   component: ComponentType;
   title: string;
   showInNav?: boolean;
+  disabled?: boolean;
 }
 
 export const RoutesWithoutNav = ["/login", "/reset-password"];
@@ -39,25 +40,6 @@ const userRoutes: RouteType[] = [
       </PrivateRoute>
     ),
     title: "Ассистент"
-  },
-  {
-    path: "/tasks",
-    component: () => (
-      <PrivateRoute>
-        <TasksPage />
-      </PrivateRoute>
-    ),
-    title: "Задания",
-    showInNav: true
-  },
-  {
-    path: "/tasks/:id",
-    component: () => (
-      <PrivateRoute>
-        <TasksPage />
-      </PrivateRoute>
-    ),
-    title: "Задания"
   },
   {
     path: "/news",
@@ -91,6 +73,17 @@ const adminRoutes: RouteType[] = [
     ),
     title: "Посещаемость",
     showInNav: true
+  },
+  {
+    path: "/tasks",
+    component: () => (
+      <PrivateRoute>
+        <TasksPage />
+      </PrivateRoute>
+    ),
+    title: "Расписание",
+    showInNav: true,
+    disabled: true
   }
 ];
 

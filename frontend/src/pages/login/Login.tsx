@@ -176,12 +176,6 @@ export const Login = observer(() => {
             {isLoginView ? "Войти" : "Регистрация"}
           </Button>
           <VKButton />
-          <button
-            type="button"
-            className="text-text-primary/60 text-sm hover:text-text-primary transition-colors duration-200 underline hover:no-underline"
-            onClick={fillTestData}>
-            Тестовый {showTestHr ? "юзер" : "админ"}
-          </button>
         </form>
         <div className="h-4" />
       </div>

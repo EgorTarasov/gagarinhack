@@ -6,17 +6,15 @@ import { FC, ReactElement, useId } from "react";
 import ChevronIcon from "@/assets/chevron2.svg";
 import Calendar from "@/assets/calendar.svg";
 import { HorizontalCarousel } from "@/components/swiper/HorizontalCarousel";
-import FootballIcon from "./assets/football.svg";
 import LearnIcon from "./assets/learn.svg";
-import VocalIcon from "./assets/vocal.svg";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
-const Card: FC<{ name: string; icon: ReactElement; time: string }> = (x) => {
+const Card: FC<{ name: string; icon: ReactElement; time: string; link?: string }> = (x) => {
   return (
     <li className="flex p-5 gap-3 rounded-2xl border border-text-primary/20 cursor-pointer">
       {x.icon}
       <div className="flex flex-col flex-1">
-        <h3 className="font-medium text-lg leading-6">{x.name}</h3>
+        <h3 className="font-medium  leading-6 break-words">{x.name}</h3>
         <IconText icon={Calendar} alt="Время" text={x.time} />
       </div>
       <button className="my-auto">
@@ -25,6 +23,8 @@ const Card: FC<{ name: string; icon: ReactElement; time: string }> = (x) => {
     </li>
   );
 };
+
+const mockTime = ["ПН 12:30", "ВТ 14:30", "ВТ 15:30"];
 
 export const CommunitiesSection: FCVM<MainPageViewModel> = observer(({ vm }) => {
   const leftControlId = useId();
@@ -49,10 +49,27 @@ export const CommunitiesSection: FCVM<MainPageViewModel> = observer(({ vm }) => 
           nextEl: `#${CSS.escape(rightControlId)}`,
           enabled: true
         }}>
-        <Card icon={<FootballIcon />} name="Футбол" time="ПН 12:30" />
-        <Card icon={<VocalIcon />} name="Вокал" time="ВТ 14:30" />
-        <Card icon={<LearnIcon />} name="Дизайн-клуб" time="ВТ 15:30" />
+        {vm.clubs.map((club, i) => (
+          <Card
+            key={club.title}
+            icon={
+              <div className="size-6 min-w-6">
+                <LearnIcon />
+              </div>
+            }
+            name={club.title}
+            time={mockTime[i % mockTime.length]}
+          />
+        ))}
       </HorizontalCarousel>
+      {vm.clubs.length === 0 && (
+        <div className="flex justify-center w-full py-4 text-center">
+          <p className="text-text-primary/60">
+            Сообщества не найдены.
+            <br /> Вы точно вошли через VK?
+          </p>
+        </div>
+      )}
     </section>
   );
 });

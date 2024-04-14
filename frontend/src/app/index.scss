@@ -49,6 +49,15 @@ legend span {
     }
 }
 
+@keyframes slide-from-left {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
 .multiline-ellipsis {
     display: -webkit-box;
     -webkit-line-clamp: 3;

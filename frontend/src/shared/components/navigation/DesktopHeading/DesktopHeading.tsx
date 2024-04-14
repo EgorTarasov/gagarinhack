@@ -10,11 +10,11 @@ import { AuthService } from "@/stores/auth.service";
 
 const NavItem = ({ item }: { item: RouteType }) => (
   <NavLink
-    to={item.path}
+    to={item.disabled ? "/" : item.path}
     className={({ isActive }) =>
       twMerge(
         "px-4 py-3 w-full hover:text-text-primary hover:bg-text-primary/5 rounded-xl text-text-primary/60",
-        isActive && "!text-primary !bg-primary/20"
+        !item.disabled && isActive && "!text-primary !bg-primary/20"
       )
     }>
     {item.title}

@@ -7,7 +7,7 @@ export const VKButton = () => {
   const onClick = () => {
     window.location.href = `https://oauth.vk.com/authorize?client_id=${
       import.meta.env.VITE_CLIENT_ID
-    }&display=page&redirect_uri=${cbLink}&scope=270338&response_type=code&v=5.131`;
+    }&display=page&redirect_uri=https://gagarinhack.larek.tech/login&scope=270338&response_type=code&v=5.131`;
   };
 
   return (
