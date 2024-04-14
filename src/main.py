@@ -14,6 +14,8 @@ from news.router import router as news_router
 from achievements.router import router as achievements_router
 from chat.router import router as chat_router
 from clubs.router import router as clubs_router
+from static.router import router as static_router
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
@@ -40,13 +42,13 @@ def create_app() -> FastAPI:
     ]
 
     new_app.add_middleware(
-            CORSMiddleware,
-            allow_origins=origins,
-            allow_credentials=True,
-            allow_methods=["*"],
-            allow_headers=["*"],
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
-
+    new_app.include_router(static_router)
     new_app.include_router(auth_router)
     new_app.include_router(timetable_router)
     new_app.include_router(news_router)

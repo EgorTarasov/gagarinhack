@@ -28,7 +28,7 @@ class MLservice:
         embedding_model: str = "Tochka-AI/ruRoPEBert-e5-base-2k",
         table_name: str = "subject_embeddings",
     ) -> None:
-        model = SentenceTransformer(embedding_model) 
+        model = SentenceTransformer(embedding_model)
 
         self.store = VectorStore(clickhouse_uri, model, table_name=table_name)
         self.ollama = Ollama(ollama_uri)
@@ -43,7 +43,7 @@ class MLservice:
         docs = self.store.search_similarity(query, 3)
         for chunk in self.ollama.get_stream_response(query, docs):
             yield chunk["message"]["content"]  # type: ignore
-        yield "Ссылки:" + "\n".join([doc.metadata for doc in docs])
+        yield "links:" + ";".join([doc.metadata for doc in docs])
 
 
 class SearchEngingeServicer(search_engine_pb2_grpc.SearchEngineServicer):
@@ -65,7 +65,7 @@ class SearchEngingeServicer(search_engine_pb2_grpc.SearchEngineServicer):
         log.info(f"new request: {body}")
         model: str = query.model
         for chunk in self.service.get_stream_response(body):
-            if chunk.startswith("Ссылки:"):
+            if chunk.startswith("links:"):
                 yield Response(body="", context=chunk)
             else:
                 yield Response(body=chunk, context="")

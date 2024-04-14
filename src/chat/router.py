@@ -2,11 +2,15 @@ import uuid
 
 from fastapi import APIRouter, WebSocket, Depends
 from fastapi.responses import HTMLResponse
+from auth.dependency import get_current_user
+from utils import UserTokenData
+from utils.logging import log
 from data import get_connection
 from asyncpg.pool import PoolConnectionProxy
 from ml import client
 from . import service
-from .schema import  MlQuery, MlResponse
+from .schema import MlQuery, MlResponse
+
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 
@@ -22,14 +26,14 @@ async def get():
 # TODO: auth for websocket
 @router.websocket("/ws/{chat_id}")
 async def websocket_endpoint(
-        websocket: WebSocket,
-        chat_id: uuid.UUID,
-        ml_client: client.MLClient = Depends(client.get_ml_service),
-        db: PoolConnectionProxy = Depends(get_connection),
+    websocket: WebSocket,
+    chat_id: uuid.UUID,
+    ml_client: client.MLClient = Depends(client.get_ml_service),
+    db: PoolConnectionProxy = Depends(get_connection),
 ):
     # TODO: fixme load previous msg via ws
     user_id = 2
-
+    # log.info(f"new connection from user:{token_data.user_id}")
 
     chat_id = await service.save_chat(db, user_id, chat_id)
     await websocket.accept()
