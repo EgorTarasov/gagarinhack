@@ -60,11 +60,22 @@ async def auth_vk(
     return schema.Token(access_token=token)
 
 
-@router.get("/me", response_model=UserDao)
+@router.get("/me")
 async def get_me(
     db_conn: PoolConnectionProxy = Depends(get_connection),
     user: UserTokenData = Depends(get_current_user),
 ):
     """Получение текущего пользователя"""
-    user = await crud.get_by_id(db_conn, user.user_id)
-    return user
+    # TODO: вот почему нужен сервис
+    db_user = await crud.get_by_id(db_conn, user.user_id)
+    print("dao", db_user)
+    if db_user is None:
+        raise HTTPException(status_code=418)
+    return schema.UserData.model_validate(
+        {
+            "id": db_user.id,
+            "email": db_user.email,
+            "first_name": db_user.first_name,
+            "last_name": db_user.last_name,
+        }
+    )

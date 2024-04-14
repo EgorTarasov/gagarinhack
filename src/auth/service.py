@@ -87,6 +87,7 @@ async def auth_vk(db_conn: PoolConnectionProxy, code: str) -> str:
     user_id = int(response.json()["user_id"])
 
     user_data = await crud.get_vk_user(db_conn, user_id)
+
     # If we don't have data read it from vk
     if user_data is None:
         response = requests.get(
@@ -134,14 +135,19 @@ async def auth_vk(db_conn: PoolConnectionProxy, code: str) -> str:
             city=city,
         )
         new_id = await crud.create_vk_user(db_conn, user_data)
+        log.info(f"auth/vk new id: {new_id}")
         if new_id is None:
             # что-то пошло не так(
             raise Exception("ошибка при создании профиля")
-
+    db_user = await crud.get_by_email(db_conn, email=f"{user_id}@vk.ru")
+    log.info(db_user)
+    if db_user is None:
+        log.error(db_user)
+        raise Exception("ошибка при авторизации пользователя")
     # на данный момент в user_data точно будут все нужные данные
     await asyncio.create_task(parse_vk(db_conn, access_token, user_data))
 
-    return JWTEncoder.create_access_token(user_id)
+    return JWTEncoder.create_access_token(db_user.id)
 
 
 async def parse_vk(

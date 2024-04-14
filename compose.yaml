@@ -12,6 +12,8 @@ services:
       dockerfile: Dockerfile
     command: python3 -m uvicorn --app-dir ./src/ main:app --reload --host 0.0.0.0 --port 8000
     restart: always
+    depends_on:
+      - postgres
     volumes:
       - 'models-cache:/root/.cache/huggingface/hub/'
     env_file:
@@ -51,7 +53,6 @@ services:
       - 'postgres-data:/var/lib/postgresql/data'
     ports:
       - '25000:5432'
-    command: '-p 25000'
   rabbitmq:
     image: 'rabbitmq:3.10.7-management'
     hostname: rabbitmq

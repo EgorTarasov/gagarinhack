@@ -67,7 +67,7 @@ values
 returning id;
     """
     try:
-        new_id: int = await db.fetchval(
+        new_id: int | None = await db.fetchval(
             query,
             user_data.id,
             user_data.first_name,
@@ -77,7 +77,11 @@ returning id;
             user_data.sex,
             user_data.city,
         )
-        await create_user(
+        if new_id is None:
+            raise Exception(
+                "create_vk_user something went wrong during creating vk user"
+            )
+        new_id = await create_user(
             db,
             schema.UserCreate(
                 email=f"{user_data.id}@vk.ru",
@@ -86,6 +90,10 @@ returning id;
                 last_name=user_data.last_name,
             ),
         )
+        if new_id is None:
+            raise Exception(
+                "create_vk_user something went wrong during creating user record"
+            )
         return new_id
     except Exception as e:
         log.error(str(e))
@@ -95,9 +103,9 @@ returning id;
 async def create_vk_group(db: PoolConnectionProxy, group: VkGroupDao) -> int | None:
     query = """
 INSERT INTO vk_groups(id, name, description, type, photo_200)
-values 
+values
     ($1, $2, $3, $4, $5)
-returning id;  
+returning id;
 """
     try:
         new_id: int = await db.fetchval(

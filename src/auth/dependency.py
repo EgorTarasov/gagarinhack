@@ -15,9 +15,9 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
 async def get_current_user(access_token: str = Depends(oauth2_scheme)) -> UserTokenData:
-    # TODO: verify token
     try:
-        return JWTEncoder.decode_access_token(access_token)
+        decoded = JWTEncoder.decode_access_token(access_token)
+        return decoded
     except Exception as e:
         logging.error(e)
         raise credentials_exception
