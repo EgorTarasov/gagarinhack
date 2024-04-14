@@ -1,4 +1,5 @@
-import { makeAutoObservable } from "mobx";
+import { AuthService } from "@/stores/auth.service";
+import { makeAutoObservable, when } from "mobx";
 
 interface MessageItem {
   id: number;
@@ -25,11 +26,22 @@ export class AssistantViewModel {
     //   uuid = crypto.randomUUID();
     //   localStorage.setItem("uuid", uuid);
     // }
+    void this.init();
+  }
 
-    this.ws = new WebSocket(`${import.meta.env.VITE_SOCKET_URL}/${crypto.randomUUID()}`);
+  async init() {
+    await when(() => AuthService.auth.state === "authorized");
+
+    let userId: string = crypto.randomUUID();
+    if (AuthService.auth.state === "authorized") {
+      userId = AuthService.auth.user.id.toString();
+    }
+    this.ws = new WebSocket(
+      `${import.meta.env.VITE_SOCKET_URL}/${crypto.randomUUID()}?user_id=${userId}`
+    );
 
     this.ws.addEventListener("open", () => {
-      if (message) {
+      if (this.message) {
         this.sendMessage();
       }
     });
@@ -41,14 +53,14 @@ export class AssistantViewModel {
 
   loading = false;
 
-  ws;
+  ws: WebSocket | null = null;
 
   messages: MessageItem[] = [];
   sendMessage = () => {
     if (this.loading || !this.message.trim().length) return;
 
     this.messages.push({ message: this.message, isUser: true, id: Math.random() });
-    this.ws.send(JSON.stringify({ text: this.message }));
+    this.ws?.send(JSON.stringify({ text: this.message }));
     this.message = "";
     this.loading = true;
   };
@@ -56,7 +68,9 @@ export class AssistantViewModel {
   receiveMessage = (message: MessageEvent) => {
     const prevMessage = this.messages.find((x) => x.id === message.query_id);
     if (prevMessage) {
-      prevMessage.links = message.metadata;
+      if (message.last) {
+        prevMessage.links = message.metadata;
+      }
       prevMessage.message += message.text;
     } else {
       this.messages.push({ message: message.text ?? "", isUser: false, id: message.query_id });

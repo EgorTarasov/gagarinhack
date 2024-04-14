@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { AssistantViewModel } from "./assistant.vm";
 import { observer } from "mobx-react-lite";
@@ -20,13 +20,39 @@ export const AssistantPage = observer(() => {
               key={index}
               className={`${item.isUser ? "justify-end" : "justify-start"} flex gap-2`}>
               <div
-                className={`p-5 rounded-2xl text-text-primary max-w-[70%]
+                className={`p-5 flex flex-col rounded-2xl text-text-primary max-w-[70%]
                 ${
                   item.isUser
                     ? "bg-primary/20 rounded-br-none"
                     : "bg-text-primary/5 rounded-bl-none border border-text-primary/5"
                 }`}>
                 {item.message}
+                <ul className="space-y-1">
+                  {!item.isUser &&
+                    item.links?.map((link) => {
+                      const hasStupidCharachters = link.includes("й");
+
+                      return (
+                        <li key={link}>
+                          {hasStupidCharachters ? (
+                            <p
+                              className="text-[#2c56de] underline underline-offset-4"
+                              rel="noreferrer">
+                              {link}
+                            </p>
+                          ) : (
+                            <a
+                              href={`${import.meta.env.VITE_API_URL}/static/file/${link}`}
+                              target="_blank"
+                              className="text-[#2c56de] underline underline-offset-4"
+                              rel="noreferrer">
+                              {link}
+                            </a>
+                          )}
+                        </li>
+                      );
+                    })}
+                </ul>
               </div>
             </li>
           ))}
