@@ -2,7 +2,7 @@ import asyncio
 
 from asyncpg.pool import PoolConnectionProxy
 
-from achievements.exeptions import InvalidPassword, NotAuthorized
+from auth.exeptions import InvalidPassword, NotAuthorized
 from worker import send_email_recovery_code, send_telegram_notification
 from config import cfg
 import requests

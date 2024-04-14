@@ -40,10 +40,19 @@ async def download_achievement(
         file_link: str,
         minio_client: minio.Minio = Depends(get_minio)
 ):
-    """Выгрузка файла-подтверждения достижения (например, диплома призёра)x"""
+    """Выгрузка файла-подтверждения достижения (например, диплома призёра)"""
     obj = minio_client.get_object(cfg.s3_bucket, file_link)
     return StreamingResponse(
         obj,
         media_type='application/octet-stream',
         headers={'Content-Disposition': f'attachment; filename="{file_link}"'}
     )
+
+
+@router.delete("/delete")
+async def delete_achievement(
+        achievement_id: int,
+        db: PoolConnectionProxy = Depends(get_connection)
+):
+    """Удаление достижения"""
+    await service.delete_achievement(db, achievement_id)

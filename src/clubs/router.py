@@ -16,4 +16,4 @@ async def get_recommended_clubs(
     user: UserTokenData = Depends(get_current_user),
 ):
     """Подбор рекомендованных клубов с сайта"""
-    return await service.get_recommended_clubs(user)
+    return await service.get_recommended_clubs(db, user.user_id)

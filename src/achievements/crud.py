@@ -26,3 +26,9 @@ async def create(db: PoolConnectionProxy, achievement: AchievementCreate, static
     _id = await db.fetchval(query, achievement.user_id, achievement.title, achievement.date, achievement.place,
                             achievement.description, achievement.event_link, achievement.type, static_name)
     return _id
+
+
+async def delete(db: PoolConnectionProxy, achievement_id: int):
+    """Удаление достижения пользователя"""
+    query = 'DELETE FROM "achievements" WHERE id=$1'
+    await db.fetch(query, achievement_id)
