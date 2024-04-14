@@ -6,3 +6,5 @@ __pycache__/
 *.csv
 *.json
 .idea/
+node_modules/
+.vite/
