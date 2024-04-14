@@ -20,11 +20,11 @@ export const AchievementCard: FC<{
   return (
     <li>
       <button
-        className="flex p-5 gap-3 rounded-2xl border border-text-primary/20 cursor-pointer"
+        className="flex w-full p-5 gap-3 rounded-2xl border border-text-primary/20 cursor-pointer"
         onClick={() => x.onClick?.()}>
         <MedalIcon className={x.iconClass} />
         <div className={`flex flex-col flex-1 ${x.iconClass}`}>
-          <h3 className="font-medium text-lg leading-6 text-text-primary">{x.name}</h3>
+          <h3 className="font-medium text-left text-lg leading-6 text-text-primary">{x.name}</h3>
           <IconText className={x.iconClass} icon={Lightning} alt="Тематика" text={x.type} />
         </div>
         <button className="my-auto">
