@@ -18,6 +18,8 @@ enum Filter {
   Creativity
 }
 
+const mockNewsType = ["Спорт", "Обучение", "Волонтёрство", "Творчество"];
+
 export const NewsPage = observer(() => {
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState<Filter[]>([Filter.ForMe]);
@@ -73,7 +75,14 @@ export const NewsPage = observer(() => {
           gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))"
         }}>
         {MainPageStore.news.map((v, i) => (
-          <NewsCard id={v.id} title={v.title} img={v.img} type={v.type} key={i} wide />
+          <NewsCard
+            id={v.id}
+            title={v.title}
+            img={v.img}
+            type={mockNewsType[i % mockNewsType.length]}
+            key={i}
+            wide
+          />
         ))}
       </ul>
     </div>

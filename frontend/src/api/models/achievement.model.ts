@@ -19,5 +19,6 @@ export namespace AchievementDto {
     description: string;
     type: string;
     event_link: string;
+    file_link: string;
   }
 }

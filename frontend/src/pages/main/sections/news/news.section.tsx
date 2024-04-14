@@ -35,6 +35,8 @@ export const NewsCard: FC<{
   );
 };
 
+const mockNewsType = ["Спорт", "Обучение", "Волонтёрство", "Творчество"];
+
 export const NewsSection: FCVM<MainPageViewModel> = observer(({ vm }) => {
   return (
     <section className="flex flex-col">
@@ -52,8 +54,14 @@ export const NewsSection: FCVM<MainPageViewModel> = observer(({ vm }) => {
         mousewheel={{
           forceToAxis: true
         }}>
-        {vm.news.map((news) => (
-          <NewsCard key={news.id} img={news.img} type={news.type} title={news.title} id={news.id} />
+        {vm.news.map((news, i) => (
+          <NewsCard
+            key={news.id}
+            img={news.img}
+            type={mockNewsType[i % mockNewsType.length]}
+            title={news.title}
+            id={news.id}
+          />
         ))}
       </HorizontalCarousel>
     </section>

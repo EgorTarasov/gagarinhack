@@ -105,7 +105,7 @@ export const AchievementSection: FCVM<MainPageViewModel> = observer(({ vm }) => 
             asLink
           />
           <button onClick={() => vm.downloadCertificate()} className="text-primary underline w-fit">
-            Сертификат победителя
+            Скачать сертификат
           </button>
           <div className="flex gap-2 w-full">
             <Button className="flex-1">Редактировать</Button>
